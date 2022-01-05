@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <StartupObject>Chess.App</StartupObject>
+        <PlatformTarget>x64</PlatformTarget>
+        <ApplicationIcon>Resources\Images\Icons\MainIcon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Resource Include="Resources\Images\Chessmen\BishopBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\BishopWhite.png" />
+        <Resource Include="Resources\Images\Chessmen\KingBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\KingWhite.png" />
+        <Resource Include="Resources\Images\Chessmen\KnightBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\KnightWhite.png" />
+        <Resource Include="Resources\Images\Chessmen\PawnBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\PawnWhite.png" />
+        <Resource Include="Resources\Images\Chessmen\QueenBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\QueenWhite.png" />
+        <Resource Include="Resources\Images\Chessmen\RookBlack.png" />
+        <Resource Include="Resources\Images\Chessmen\RookWhite.png" />
+    </ItemGroup>
+        
+    <ItemGroup>
+        <Resource Include="Resources\Images\Icons\BackIcon.png" />
+        <Resource Include="Resources\Images\Icons\ExitIcon.png" />
+        <Resource Include="Resources\Images\Icons\ForwardIcon.png" />
+        <Resource Include="Resources\Images\Icons\NewIcon.png" />
+        <Resource Include="Resources\Images\Icons\OpenIcon.png" />
+        <Resource Include="Resources\Images\Icons\SaveIcon.png" />
+        <Resource Include="Resources\Images\Icons\SettingsIcon.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Resources\Images\Icons\MainIcon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Engine\Engine.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Chess.View.UserControls.NewGameUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignWidth="640" d:DesignHeight="480" FontSize="16">
+    <Grid MaxWidth="800" MaxHeight="600">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="2"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" Name="BlackDifficultyRow"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" Name="WhiteDifficultyRow"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*" Name="MinTimeRow"/>
+            <RowDefinition Height="1" Name="MinTimeBlackLine"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Name="HeaderTextBlock" Grid.ColumnSpan="2" FontSize="20" Text="New game settings:" Padding="5,0" FontWeight="Bold" HorizontalAlignment="Center"/>
+        
+        <Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" Fill="Black"/>
+        <Label Content="_Black pieces:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Target="{Binding ElementName=BlackComboBox}"/>
+        <ComboBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Name="BlackComboBox" SelectionChanged="BlackComboBox_SelectionChanged">
+            <TextBlock Text="Player"/>
+            <TextBlock Text="Emulator"/>
+        </ComboBox>
+        <Label Name="BlackDifficultyLabel" Content="_Difficulty:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Target="{Binding ElementName=BlackSlider}"/>
+        <StackPanel Name="BlackStackPanel" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center">
+            <Slider  Name="BlackSlider" Maximum="2" TickPlacement="BottomRight" Margin="50,0" ValueChanged="BlackSlider_ValueChanged" IsSnapToTickEnabled="True"/>
+            <Grid>
+                <TextBlock Text="Easy" HorizontalAlignment="Left" FontSize="13" Margin="40,0"/>
+                <TextBlock Text="Medium" HorizontalAlignment="Center" FontSize="13"/>
+                <TextBlock Text="Hard" HorizontalAlignment="Right" FontSize="13" Margin="40,0"/>
+            </Grid>
+        </StackPanel>
+        
+        <Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="4" Fill="Black"/>
+        <Label Content="_White pieces:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Target="{Binding ElementName=WhiteComboBox}"/>
+        <ComboBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" x:Name="WhiteComboBox" SelectionChanged="WhiteComboBox_SelectionChanged">
+            <TextBlock Text="Player"/>
+            <TextBlock Text="Emulator"/>
+        </ComboBox>
+        <Label Name="WhiteDifficultyLabel" Content="_Difficulty:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Target="{Binding ElementName=WhiteSlider}"/>
+        <StackPanel Name="WhiteStackPanel" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">
+            <Slider  Name="WhiteSlider" Maximum="2" TickPlacement="BottomRight" Margin="50,0" ValueChanged="WhiteSlider_ValueChanged" IsSnapToTickEnabled="True"/>
+            <Grid>
+                <TextBlock Text="Easy" FontSize="13" HorizontalAlignment="Left" Margin="40,0"/>
+                <TextBlock Text="Medium" HorizontalAlignment="Center" FontSize="13"/>
+                <TextBlock Text="Hard" HorizontalAlignment="Right" FontSize="13" Margin="40,0"/>
+            </Grid>
+        </StackPanel>
+
+        <Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="7" Fill="Black"/>
+        <Label Name="MinTimeLabel" Content="_Minimal duration or turn:" Grid.Row="8" Grid.Column="0"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center" Target="{Binding ElementName=MinTimeSlider}"/>
+        <StackPanel Name="MinTimeStackPanel" Grid.Row="8" Grid.Column="1" VerticalAlignment="Center">
+            <Slider  Name="MinTimeSlider" Maximum="6" TickPlacement="BottomRight" Margin="10,0"
+                     IsSnapToTickEnabled="True" TickFrequency="0.1" ValueChanged="MinTimeSlider_ValueChanged"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding ElementName=MinTimeSlider, Path=Value, StringFormat=N1, Mode=OneWay}" FontSize="13"/>
+                <TextBlock Text=" s" FontSize="13"/>
+            </StackPanel>
+
+        </StackPanel>
+
+        <Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="9" Fill="Black"/>
+        <Grid Grid.Row="10" Grid.ColumnSpan="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button VerticalAlignment="Center" Width="80" Height="30" HorizontalAlignment="Center" IsDefault="True" Name="ConfirmButton" Content="Confirm" Click="ConfirmButton_Click"/>
+            <Button VerticalAlignment="Center" Width="80" Height="30" HorizontalAlignment="Center" IsCancel="True" Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Grid.Column="1"/>
+        </Grid>
+    </Grid>
+</UserControl>

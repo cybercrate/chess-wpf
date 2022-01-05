@@ -1,0 +1,248 @@
+﻿<UserControl x:Class="Chess.View.UserControls.ChessUserControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignWidth="640" d:DesignHeight="480"
+             FontSize="16" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+
+        <!-- Chessboard + letters + black border + menu + right bar -->
+        <Grid Name="GridSizeRatio" SizeChanged="GridSizeRatio_SizeChanged" Loaded="GridSizeRatio_Loaded">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="0"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Fill="DarkSlateGray" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
+
+            <!-- Letters, numbers -->
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="A" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="B" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="1"/>
+                <TextBlock Text="C" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="2"/>
+                <TextBlock Text="D" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="3"/>
+                <TextBlock Text="E" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="4"/>
+                <TextBlock Text="F" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="5"/>
+                <TextBlock Text="G" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="6"/>
+                <TextBlock Text="H" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="7"/>
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="A" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="B" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="1"/>
+                <TextBlock Text="C" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="2"/>
+                <TextBlock Text="D" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="3"/>
+                <TextBlock Text="E" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="4"/>
+                <TextBlock Text="F" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="5"/>
+                <TextBlock Text="G" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="6"/>
+                <TextBlock Text="H" Foreground="White" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="7"/>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="8" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="7" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1"/>
+                <TextBlock Text="6" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2"/>
+                <TextBlock Text="5" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="3"/>
+                <TextBlock Text="4" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="4"/>
+                <TextBlock Text="3" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="5"/>
+                <TextBlock Text="2" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6"/>
+                <TextBlock Text="1" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="7"/>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="8" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="7" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1"/>
+                <TextBlock Text="6" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2"/>
+                <TextBlock Text="5" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="3"/>
+                <TextBlock Text="4" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="4"/>
+                <TextBlock Text="3" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="5"/>
+                <TextBlock Text="2" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6"/>
+                <TextBlock Text="1" Foreground="White" FontSize="11.5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="7"/>
+            </Grid>
+
+            <!-- Chessboard -->
+            <Grid Name="Grid" Grid.Row="1" Grid.Column="1" PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <!-- Right bar (menu + expanders) -->
+            <StackPanel Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch">
+                <!-- Menu -->
+                <Menu FontWeight="Bold" FontSize="17" Grid.ColumnSpan="4">
+                    <MenuItem Header="Game">
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="NewMenuItem" Header="New" Click="NewMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/NewIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/SettingsIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="OpenMenuItem" Header="Open" Foreground="Black" Click="OpenMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/OpenIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="SaveMenuItem" Header="Save as" Foreground="Black" Click="SaveMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/SaveIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="ExitMenuItem" Header="Exit" Foreground="Black" Click="CloseMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/ExitIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Action">
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="BackMenuItem" Header="Back"
+                                  Click="BackMenuItem_Click" StaysOpenOnClick="True">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/BackIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem FontSize="15" FontWeight="Normal" Name="ForwardMenuItem" Header="Forward"
+                                  StaysOpenOnClick="True" Click="ForwardMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Source="/Resources/Images/Icons/ForwardIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+
+                <!-- Taken pieces -->
+                <Expander Header="Black pieces"
+                          VerticalAlignment="Stretch"
+                          FontSize="16"
+                          IsExpanded="True"
+                          Margin="4">
+                    
+                    <WrapPanel x:Name="WrapPanelBlack"
+                               Background="#FFF0F0F0" />
+                </Expander>
+
+                <Expander Header="White pieces"
+                          VerticalAlignment="Stretch"
+                          FontSize="16"
+                          IsExpanded="True"
+                          Margin="4">
+                    
+                    <WrapPanel x:Name="WrapPanelWhite"
+                               Background="#FFF0F0F0" />
+                </Expander>
+
+                <TextBlock Margin="0, 4, 0, 0"
+                           Name="StatusTextBlock"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           FontWeight="Bold"
+                           Foreground="Red"/>
+            </StackPanel>
+
+            <!-- ProgressBar -->
+            <Grid Name="ProgressBar" Grid.Column="3" Grid.Row="2">
+                <ProgressBar Margin="0"
+                         Value="{Binding Path=ProgressValue, Mode=OneWay}"
+                         Maximum="{Binding Path=ProgressMaximum, Mode=OneWay}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Last turn duration: " FontSize="10" FontWeight="Medium" />
+                    <TextBlock Text="{Binding Path=TurnLength, Mode=OneWay}" FontSize="10" FontWeight="Medium"/>
+                    <TextBlock Text=" s" FontSize="10" FontWeight="Medium"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Status bar -->
+        <StatusBar Grid.Row="1" Background="#FFF0F0F0" FontSize="17.5">
+            <StatusBarItem Padding="5,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="16" Text="Turn: "/>
+                    <TextBlock FontSize="16" Name="TextBlockOnTurn" FontWeight="Bold" />
+                    <TextBlock FontSize="16" Text=" pieces"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem Padding="5,0">
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Padding="5,0">
+                <TextBlock FontSize="16" Text=""/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>
