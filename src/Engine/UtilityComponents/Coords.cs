@@ -1,7 +1,7 @@
 ﻿namespace Engine.UtilityComponents;
 
 /// <summary>
-/// Coordinates
+/// Coordinates.
 /// </summary>
 public readonly struct Coords
 {

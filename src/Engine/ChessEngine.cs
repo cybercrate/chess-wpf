@@ -3,6 +3,7 @@ using Engine.Conditions;
 using Engine.IO;
 using Engine.Pieces.Base;
 using Engine.ResourceManagement;
+using Engine.UtilityComponents;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Windows;
@@ -10,12 +11,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Engine.UtilityComponents;
 
 namespace Engine;
 
 /// <summary>
-/// Wires the logic layer with the user interface
+/// Wires the logic layer with the user interface.
 /// </summary>
 public class ChessEngine : INotifyPropertyChanged
 {
@@ -164,16 +164,16 @@ public class ChessEngine : INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Logical movement of piece
+    /// Logical movement of piece.
     /// </summary>
     public static void MovePiece(Coords from, Coords to, Conditions.Condition condition, bool automaticPromotion = true)
     {
-        // Specifies whether to increment draw50 value in condition
+        // Specifies whether to increment draw50 value in condition.
         var draw50 = true;
         
         // Taking pieces and promotions.
         // Checking whether piece has taken a pawn en passant.
-        if (condition.Chessboard[from.Row, from.Column].Status == 'p')
+        if (condition.Chessboard[from.Row, from.Column].Status is 'p')
         {
             // If the pawn moves, draw50 is invalid.
             draw50 = false;
@@ -185,7 +185,7 @@ public class ChessEngine : INotifyPropertyChanged
             }
         }
         
-        // Removing previous taking en passant
+        // Removing previous taking en passant.
         for (var i = 0; i < 8; i++)
         {
             if (condition.Chessboard[2, i].Status is 'x')
@@ -205,7 +205,7 @@ public class ChessEngine : INotifyPropertyChanged
 
         switch (condition.Chessboard[from.Row, from.Column].Status)
         {
-            // Checking new taking en passant
+            // Checking new taking en passant.
             case 'p':
             {
                 var move = from.Row - to.Row;
@@ -216,20 +216,20 @@ public class ChessEngine : INotifyPropertyChanged
                     // If the movement is negative, a white pawn was moved.
                     if (move < 0)
                     {
-                        // Creating selection for taking en passant
+                        // Creating selection for taking en passant.
                         condition.Chessboard[from.Row + 1, from.Column].Status = 'x';
                         
-                        // Setting pawn color to square for taking en passant
+                        // Setting pawn color to square for taking en passant.
                         condition.Chessboard[from.Row + 1, from.Column].White =
                             condition.Chessboard[from.Row, from.Column].White;
                     }
                     // If positive, a black pawn was moved.
                     else 
                     {
-                        // Creating selection for taking en passant
+                        // Creating selection for taking en passant.
                         condition.Chessboard[from.Row - 1, from.Column].Status = 'x';
                         
-                        // Setting pawn color to square for taking en passant
+                        // Setting pawn color to square for taking en passant.
                         condition.Chessboard[from.Row - 1, from.Column].White =
                             condition.Chessboard[from.Row, from.Column].White;
                     }
@@ -237,6 +237,7 @@ public class ChessEngine : INotifyPropertyChanged
 
                 break;
             }
+            
             // Castling.
             case 'v' when from.Row is 0:
             {
@@ -297,7 +298,8 @@ public class ChessEngine : INotifyPropertyChanged
                         MovePiece(new Coords(from.Row, (sbyte)(from.Column + 3)),
                             new Coords(from.Row, (sbyte)(from.Column + 1)), condition);
                     }
-                    // Rook movement caused swapping white on turn
+                    
+                    // Rook movement caused swapping white on turn.
                     condition.WhiteOnTurn = !condition.WhiteOnTurn;
                 }
 
@@ -318,7 +320,7 @@ public class ChessEngine : INotifyPropertyChanged
         // Removing piece from old position.
         condition.Chessboard[from.Row, from.Column].Status = 'n';
         
-        // Is necessary to increment draw50 or null..
+        // Is necessary to increment draw50 or null.
         if (draw50)
         {
             condition.Draw50++;
@@ -328,7 +330,7 @@ public class ChessEngine : INotifyPropertyChanged
             condition.Draw50 = 0;
         }
         
-        // Moving pawn to the last row - automatically promotes to queen
+        // Moving pawn to the last row - automatically promotes to queen.
         if (automaticPromotion)
         {
             if (condition.Chessboard[to.Row, to.Column].Status is 'p')
@@ -340,7 +342,7 @@ public class ChessEngine : INotifyPropertyChanged
             }
         }
         
-        // Swapping color on turn
+        // Swapping color on turn.
         condition.WhiteOnTurn = !condition.WhiteOnTurn;
     }
     
@@ -369,45 +371,44 @@ public class ChessEngine : INotifyPropertyChanged
         Settings.NewGame = false;
         Emulator.InterruptHalfTurn = true;
 
-        Task.Run(() =>
-        {
-            _turnTask.Wait();
-        }).ContinueWith(_ =>
-        {
-            _history.Clear();
-            _future.Clear();
-            _condition = new Conditions.Condition();
-            _calculatedCondition = new CalculatedCondition(_condition);
-            DrawCalculatedSituation();
-            _textBlockOnTurn.Text = "white";
-            _textBlockStatus.Text = string.Empty;
-
-            if (_selectedCoords is not null)
-            {
-                foreach (Coords coords in _selectedCoords)
+        Task.Run(() => { _turnTask.Wait(); })
+            .ContinueWith(_ =>
                 {
-                    DeselectSquare(coords);
-                }
-                
-                _selectedCoords = null;
-            }
+                    _history.Clear();
+                    _future.Clear();
+                    _condition = new Conditions.Condition();
+                    _calculatedCondition = new CalculatedCondition(_condition);
+                    DrawCalculatedSituation();
+                    _textBlockOnTurn.Text = "white";
+                    _textBlockStatus.Text = string.Empty;
 
-            DeselectAiCoords();
+                    if (_selectedCoords is not null)
+                    {
+                        foreach (Coords coords in _selectedCoords)
+                        {
+                            DeselectSquare(coords);
+                        }
 
-            // Resetting lost pieces
-            _whiteLost.Children.RemoveRange(0, _whiteLost.Children.Count);
-            _blackLost.Children.RemoveRange(0, _blackLost.Children.Count);
-            _whiteLost.Children.Add(GenerateNoLostPiecesTextBlock());
-            _blackLost.Children.Add(GenerateNoLostPiecesTextBlock());
+                        _selectedCoords = null;
+                    }
 
-            ProgressValue = 0;
-            ProgressMaximum = 1;
-            EmulatorTurn();
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+                    DeselectAiCoords();
+
+                    // Resetting lost pieces.
+                    _whiteLost.Children.RemoveRange(0, _whiteLost.Children.Count);
+                    _blackLost.Children.RemoveRange(0, _blackLost.Children.Count);
+                    _whiteLost.Children.Add(GenerateNoLostPiecesTextBlock());
+                    _blackLost.Children.Add(GenerateNoLostPiecesTextBlock());
+
+                    ProgressValue = 0;
+                    ProgressMaximum = 1;
+                    EmulatorTurn();
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
     }
-    
+
     /// <summary>
-    /// Square click
+    /// Square click.
     /// </summary>
     public void ButtonClick(Coords coords)
     {
@@ -430,20 +431,20 @@ public class ChessEngine : INotifyPropertyChanged
         }
         else
         {
-            // Graphically selected squares are unselected
+            // Graphically selected squares are unselected.
             foreach (Coords coordsPossibleMove in _selectedCoords)
             {
                 DeselectSquare(coordsPossibleMove);
             }
             
-            // Whether selected square was clicked
+            // Whether selected square was clicked.
             var selectedClicked = false;
             
-            // Length - 1, because the last coord depends on piece position
+            // Length - 1, because the last coord depends on piece position.
             for (var i = 0; i < _selectedCoords.Length - 1; i++)
             {
                 // Selected button clicked?
-                if (!_selectedCoords[i].Equals(coords))
+                if (_selectedCoords[i].Equals(coords) is false)
                 {
                     continue;
                 }
@@ -458,20 +459,20 @@ public class ChessEngine : INotifyPropertyChanged
                 MovePiece(_selectedCoords[^1], coords);
                 _selectedCoords = null;
                 
-                // Graphically draws the new condition
+                // Graphically draws the new condition.
                 DrawCalculatedSituation();
             }
-            else // Selected square wasn't clicked
+            // Selected square wasn't clicked.
+            else 
             {
-                // If different piece was clicked, its square is selected
+                // If different piece was clicked, its square is selected.
                 if (_selectedCoords[^1].Equals(coords) is false)
                 {
                     // Necessary to null after condition (selectedCoords is used in the condition).
                     _selectedCoords = null;
                     
                     // If the square contains piece of player that is on turn...
-                    if (_condition.Chessboard[coords.Row, coords.Column].Status is not 'n' &&
-                        _condition.Chessboard[coords.Row, coords.Column].Status is not 'x' &&
+                    if (_condition.Chessboard[coords.Row, coords.Column].Status is not 'n' and not 'x' &&
                         _condition.Chessboard[coords.Row, coords.Column].White == _condition.WhiteOnTurn)
                     {
                         SelectPossibleMoves(coords);
@@ -499,7 +500,7 @@ public class ChessEngine : INotifyPropertyChanged
         // Piece moves to a square with another piece, therefore attacking it.
         if (_condition.Chessboard[to.Row, to.Column].Status is not 'n')
         {
-            // It isn't en passant, or it is but a pawn is taken by a pawn
+            // It isn't en passant, or it is but a pawn is taken by a pawn.
             if (_condition.Chessboard[to.Row, to.Column].Status is not 'x' ||
                 _condition.Chessboard[from.Row, from.Column].Status is 'p')
             {
@@ -512,7 +513,7 @@ public class ChessEngine : INotifyPropertyChanged
                         _whiteLost.Children.RemoveAt(0);
                     }
                     
-                    // Adding image of taken piece
+                    // Adding image of taken piece.
                     _whiteLost.Children.Add(GeneratePieceImage(_condition.Chessboard[to.Row, to.Column], true));
                 }
                 else
@@ -523,7 +524,7 @@ public class ChessEngine : INotifyPropertyChanged
                         _blackLost.Children.RemoveAt(0);
                     }
 
-                    // Adding image of taken piece
+                    // Adding image of taken piece.
                     _blackLost.Children.Add(GeneratePieceImage(_condition.Chessboard[to.Row, to.Column], true));
                 }
             }
@@ -539,8 +540,8 @@ public class ChessEngine : INotifyPropertyChanged
             {
                 if (to.Row is 7 or 0)
                 {
-                    _condition.Chessboard[to.Row, to.Column].Status =
-                        _openPromotionOptions(_condition.Chessboard[to.Row, to.Column].White);
+                    var options = _openPromotionOptions(_condition.Chessboard[to.Row, to.Column].White);
+                    _condition.Chessboard[to.Row, to.Column].Status = options;
                 }
             }
         }
@@ -548,7 +549,7 @@ public class ChessEngine : INotifyPropertyChanged
         _calculatedCondition = new CalculatedCondition(_condition);
         EmulatorTurn();
     }
-    
+
     /// <summary>
     /// Returns one half turn back.
     /// </summary>
@@ -567,68 +568,69 @@ public class ChessEngine : INotifyPropertyChanged
 
         Emulator.InterruptHalfTurn = true;
 
-        Task.Run(() =>
-        {
-            _turnTask.Wait();
-        }).ContinueWith(_ =>
-        {
-            // Deselects selected squares.
-            DeselectAiCoords();
-            
-            if (_selectedCoords is not null)
-            {
-                foreach (Coords c in _selectedCoords)
+        Task.Run(() => { _turnTask.Wait(); })
+            .ContinueWith(_ =>
                 {
-                    DeselectSquare(c);
-                }
-                _selectedCoords = null;
-            }
+                    // Deselects selected squares.
+                    DeselectAiCoords();
 
-            _back.IsEnabled = false;
-            
-            for (var i = 0; i < _backCount; i++)
-            {
-                var previousSituation = _history.Pop();
-
-                // Returning taken piece.
-                if (_condition.ToString().Length < previousSituation.ToString().Length)
-                {
-                    // Calculating white and black pieces in the current condition.
-                    var whiteCurrentCount = _condition.Chessboard.Cast<PieceChar>()
-                        .Where(pc => pc.Status is not 'n' && pc.Status is not 'x').Count(pc => pc.White);
-
-                    // Calculating white and black pieces in the previous condition.
-                    var whitePreviousCount = previousSituation.Chessboard.Cast<PieceChar>()
-                        .Where(pc => pc.Status is not 'n' && pc.Status is not 'x').Count(pc => pc.White);
-
-                    // Removing taken piece from wrap panel of the taken piece.
-
-                    var taken = whitePreviousCount > whiteCurrentCount ? _whiteLost : _blackLost;
-                    taken.Children.RemoveAt(taken.Children.Count - 1);
-                    
-                    if (taken.Children.Count is 0)
+                    if (_selectedCoords is not null)
                     {
-                        TextBlock tb = GenerateNoLostPiecesTextBlock();
-                        taken.Children.Add(tb);
+                        foreach (Coords c in _selectedCoords)
+                        {
+                            DeselectSquare(c);
+                        }
+
+                        _selectedCoords = null;
                     }
-                }
 
-                _future.Push(_condition);
-                _condition = previousSituation;
-            }
-            
-            _backCount = 0;
-            _calculatedCondition = new CalculatedCondition(_condition);
-            
-            DrawCalculatedSituation();
+                    _back.IsEnabled = false;
 
-            if (PlayerOnTurn() is false)
-            {
-                EmulatorTurn();
-            }
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+                    for (var i = 0; i < _backCount; i++)
+                    {
+                        var previousSituation = _history.Pop();
+
+                        // Returning taken piece.
+                        if (_condition.ToString().Length < previousSituation.ToString().Length)
+                        {
+                            // Calculating white and black pieces in the current condition.
+                            var whiteCurrentCount = _condition.Chessboard.Cast<PieceChar>()
+                                .Where(pc => pc.Status is not 'n' && pc.Status is not 'x')
+                                .Count(pc => pc.White);
+
+                            // Calculating white and black pieces in the previous condition.
+                            var whitePreviousCount = previousSituation.Chessboard.Cast<PieceChar>()
+                                .Where(pc => pc.Status is not 'n' && pc.Status is not 'x')
+                                .Count(pc => pc.White);
+
+                            // Removing taken piece from wrap panel of the taken piece.
+                            var taken = whitePreviousCount > whiteCurrentCount ? _whiteLost : _blackLost;
+                            taken.Children.RemoveAt(taken.Children.Count - 1);
+
+                            if (taken.Children.Count is 0)
+                            {
+                                var tb = GenerateNoLostPiecesTextBlock();
+                                taken.Children.Add(tb);
+                            }
+                        }
+
+                        _future.Push(_condition);
+                        _condition = previousSituation;
+                    }
+
+                    _backCount = 0;
+                    _calculatedCondition = new CalculatedCondition(_condition);
+
+                    DrawCalculatedSituation();
+
+                    if (PlayerOnTurn() is false)
+                    {
+                        EmulatorTurn();
+                    }
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
     }
-    
+
     /// <summary>
     /// Moves game one half turn forward.
     /// </summary>
@@ -647,144 +649,144 @@ public class ChessEngine : INotifyPropertyChanged
 
         Emulator.InterruptHalfTurn = true;
 
-        Task.Run(() =>
-        {
-            _turnTask.Wait();
-        }).ContinueWith(_ =>
-        {
-            // Deselects selected squares.
-            DeselectAiCoords();
-            
-            if (_selectedCoords != null)
-            {
-                foreach (var selectedCoords in _selectedCoords)
+        Task.Run(() => { _turnTask.Wait(); })
+            .ContinueWith(_ =>
                 {
-                    DeselectSquare(selectedCoords);
-                }
-                _selectedCoords = null;
-            }
+                    // Deselects selected squares.
+                    DeselectAiCoords();
 
-            _forward.IsEnabled = false;
-            
-            for (var i = 0; i < _forwardCount; i++)
-            {
-                var futureSituation = _future.Pop();
-
-                // Returning taken piece.
-                if (_condition.ToString().Length > futureSituation.ToString().Length)
-                {
-                    // White pieces in current check condition
-                    List<PieceChar> whiteCurrent = new();
-                    
-                    // Black pieces in current check condition
-                    List<PieceChar> blackCurrent = new();
-                    
-                    // White pieces in future check condition
-                    List<PieceChar> whiteFuture = new();
-                    
-                    // Black pieces in future check condition
-                    List<PieceChar> blackFuture = new();
-
-                    // Loading white and black pieces in current condition
-                    foreach (PieceChar pc in _condition.Chessboard)
+                    if (_selectedCoords is not null)
                     {
-                        if (pc.Status is 'n' or 'x')
+                        foreach (var selectedCoords in _selectedCoords)
                         {
-                            continue;
+                            DeselectSquare(selectedCoords);
                         }
-                        
-                        if (pc.White)
-                        {
-                            whiteCurrent.Add(pc);
-                        }
-                        else
-                        {
-                            blackCurrent.Add(pc);
-                        }
+
+                        _selectedCoords = null;
                     }
 
-                    // Loading white and black pieces in previous condition.
-                    foreach (PieceChar pc in futureSituation.Chessboard)
-                    {
-                        if (pc.Status is 'n' or 'x')
-                        {
-                            continue;
-                        }
-                        
-                        if (pc.White)
-                        {
-                            whiteFuture.Add(pc);
-                        }
-                        else
-                        {
-                            blackFuture.Add(pc);
-                        }
-                    }
+                    _forward.IsEnabled = false;
 
-                    WrapPanel taken;
-                    var takenPc = new PieceChar('n');
-
-                    // Finding taken piece.
-                    if (whiteCurrent.Count > whiteFuture.Count)
+                    for (var i = 0; i < _forwardCount; i++)
                     {
-                        taken = _whiteLost;
-                        
-                        foreach (PieceChar pc in whiteCurrent)
+                        var futureSituation = _future.Pop();
+
+                        // Returning taken piece.
+                        if (_condition.ToString().Length > futureSituation.ToString().Length)
                         {
-                            if (whiteFuture.Contains(pc))
+                            // White pieces in current check condition.
+                            List<PieceChar> whiteCurrent = new();
+
+                            // Black pieces in current check condition.
+                            List<PieceChar> blackCurrent = new();
+
+                            // White pieces in future check condition.
+                            List<PieceChar> whiteFuture = new();
+
+                            // Black pieces in future check condition.
+                            List<PieceChar> blackFuture = new();
+
+                            // Loading white and black pieces in current condition.
+                            foreach (PieceChar pc in _condition.Chessboard)
                             {
-                                whiteFuture.Remove(pc);
+                                if (pc.Status is 'n' or 'x')
+                                {
+                                    continue;
+                                }
+
+                                if (pc.White)
+                                {
+                                    whiteCurrent.Add(pc);
+                                }
+                                else
+                                {
+                                    blackCurrent.Add(pc);
+                                }
+                            }
+
+                            // Loading white and black pieces in previous condition.
+                            foreach (PieceChar pc in futureSituation.Chessboard)
+                            {
+                                if (pc.Status is 'n' or 'x')
+                                {
+                                    continue;
+                                }
+
+                                if (pc.White)
+                                {
+                                    whiteFuture.Add(pc);
+                                }
+                                else
+                                {
+                                    blackFuture.Add(pc);
+                                }
+                            }
+
+                            WrapPanel taken;
+                            var takenPc = new PieceChar('n');
+
+                            // Finding taken piece.
+                            if (whiteCurrent.Count > whiteFuture.Count)
+                            {
+                                taken = _whiteLost;
+
+                                foreach (PieceChar pc in whiteCurrent)
+                                {
+                                    if (whiteFuture.Contains(pc))
+                                    {
+                                        whiteFuture.Remove(pc);
+                                    }
+                                    else
+                                    {
+                                        takenPc = pc;
+                                        break;
+                                    }
+                                }
                             }
                             else
                             {
-                                takenPc = pc;
-                                break;
+                                taken = _blackLost;
+
+                                foreach (PieceChar pc in blackCurrent)
+                                {
+                                    if (blackFuture.Contains(pc))
+                                        blackFuture.Remove(pc);
+                                    else
+                                    {
+                                        takenPc = pc;
+                                        break;
+                                    }
+                                }
                             }
-                        }
-                    }
-                    else
-                    {
-                        taken = _blackLost;
-                        
-                        foreach (PieceChar pc in blackCurrent)
-                        {
-                            if (blackFuture.Contains(pc))
-                                blackFuture.Remove(pc);
-                            else
+
+                            if (taken.Children[0] is TextBlock)
                             {
-                                takenPc = pc;
-                                break;
+                                taken.Children.RemoveAt(0);
                             }
+
+                            // Adding taken piece into wrap panel of taken pieces.
+                            taken.Children.Add(GeneratePieceImage(takenPc, true));
                         }
+
+                        _history.Push(_condition);
+                        _condition = futureSituation;
                     }
 
-                    if (taken.Children[0] is TextBlock)
+                    _forwardCount = 0;
+                    _calculatedCondition = new CalculatedCondition(_condition);
+
+                    DrawCalculatedSituation();
+
+                    if (PlayerOnTurn() is false)
                     {
-                        taken.Children.RemoveAt(0);
+                        EmulatorTurn();
                     }
-                    
-                    // Adding taken piece into wrap panel of taken pieces
-                    taken.Children.Add(GeneratePieceImage(takenPc, true));
-                }
-
-                _history.Push(_condition);
-                _condition = futureSituation;
-            }
-            
-            _forwardCount = 0;
-            _calculatedCondition = new CalculatedCondition(_condition);
-            
-            DrawCalculatedSituation();
-
-            if (PlayerOnTurn() is false)
-            {
-                EmulatorTurn();
-            }
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
     }
-    
+
     /// <summary>
-    /// Saves the check condition into text file
+    /// Saves the check condition into text file.
     /// </summary>
     public void SaveIntoFile()
     {
@@ -794,7 +796,7 @@ public class ChessEngine : INotifyPropertyChanged
             Emulator.InterruptHalfTurn = true;
         }
 
-        // Generating file name
+        // Generating file name.
         var dt = DateTime.Now;
         var name = $"Chess {dt.Year}-{dt:MM}-{dt:dd} {dt:HH.mm}";
 
@@ -809,11 +811,11 @@ public class ChessEngine : INotifyPropertyChanged
             // Loading taken pieces into logical representation.
             var blackTakenPiece = _blackLost.Children.Cast<UIElement>()
                 .TakeWhile(uiElement => uiElement is not TextBlock)
-                .Select(uiElement => (PieceChar)((Image) uiElement).Tag).ToList();
+                .Select(uiElement => (PieceChar)(uiElement as Image)!.Tag).ToList();
 
             var whiteTakenList = _whiteLost.Children.Cast<UIElement>()
                 .TakeWhile(uiElement => uiElement is not TextBlock)
-                .Select(uiElement => (PieceChar)((Image) uiElement).Tag).ToList();
+                .Select(uiElement => (PieceChar)(uiElement as Image)!.Tag).ToList();
 
             try
             {
@@ -939,6 +941,7 @@ public class ChessEngine : INotifyPropertyChanged
         else if (PlayerOnTurn() is false)
         {
             DrawCalculatedSituation();
+            
             Task.Run(() => _turnTask.Wait())
                 .ContinueWith(_ => EmulatorTurn(), TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -959,46 +962,44 @@ public class ChessEngine : INotifyPropertyChanged
         }
     }
 
-    private bool PlayerOnTurn()
-    {
-        return _condition.WhiteOnTurn && Settings.PlayerIsWhite ||
-               _condition.WhiteOnTurn is false && Settings.PlayerIsBlack;
-    }
+    private bool PlayerOnTurn() =>
+        _condition.WhiteOnTurn && Settings.PlayerIsWhite || _condition.WhiteOnTurn is false && Settings.PlayerIsBlack;
+
     /// <summary>
     /// Draws condition of chessboard.
     /// </summary>
-    void DrawCalculatedSituation()
+    private void DrawCalculatedSituation()
     {
-        for (int row = 0; row < 8; row++)
+        for (var row = 0; row < 8; row++)
         {
-            for (int column = 0; column < 8; column++)
+            for (var column = 0; column < 8; column++)
             {
-                switch (_condition.Chessboard[row, column].Status)
+                // Free square.
+                if (_condition.Chessboard[row, column].Status is 'n' or 'x')
                 {
-                    // Free square
-                    case 'n':
-                    case 'x':
-                        if (((Grid)(_buttons[row, column].Content)).Children[1] is Image)
-                        {
-                            ((Grid)(_buttons[row, column].Content)).Children.RemoveRange(0, 2);
-                            ((Grid)(_buttons[row, column].Content)).Children.Add(new UIElement());
-                            ((Grid)(_buttons[row, column].Content)).Children.Add(new UIElement());
-                        }
-                        break;
-                    // Other pieces
-                    default:
-                        #region Displays piece on square
-                        Image img = GeneratePieceImage(_condition.Chessboard[row, column]);
-                        ((Grid)(_buttons[row, column].Content)).Children.RemoveRange(0, 2);
-                        ((Grid)(_buttons[row, column].Content)).Children.Add(new UIElement());
-                        ((Grid)(_buttons[row, column].Content)).Children.Add(img);
-                        #endregion
-                        break;
+                    if ((_buttons[row, column].Content as Grid)!.Children[1] is not Image)
+                    {
+                        continue;
+                    }
+                    
+                    (_buttons[row, column].Content as Grid)!.Children.RemoveRange(0, 2);
+                    (_buttons[row, column].Content as Grid)!.Children.Add(new UIElement());
+                    (_buttons[row, column].Content as Grid)!.Children.Add(new UIElement());
+                }
+                // Other pieces.
+                else
+                {
+                    // Displays piece on square.
+                    var image = GeneratePieceImage(_condition.Chessboard[row, column]);
+                    
+                    (_buttons[row, column].Content as Grid)!.Children.RemoveRange(0, 2);
+                    (_buttons[row, column].Content as Grid)!.Children.Add(new UIElement());
+                    (_buttons[row, column].Content as Grid)!.Children.Add(image);
                 }
             }
         }
 
-        // Selected squares are drawn
+        // Selected squares are drawn.
         if (_selectedAiCoords is not null)
         {
             foreach (Coords coords in _selectedAiCoords)
@@ -1025,16 +1026,11 @@ public class ChessEngine : INotifyPropertyChanged
         }
         else if (_calculatedCondition.Check)
         {
-            _textBlockStatus.Text = "Check";
-            
-            if (_calculatedCondition.DrawMate)
-            {
-                _textBlockStatus.Text = "Mate";
-            }
+            _textBlockStatus.Text = _calculatedCondition.DrawMate ? "Mate" : "Check";
         }
         else
         {
-            _textBlockStatus.Text = _calculatedCondition.DrawMate is false ? "" : "Draw";
+            _textBlockStatus.Text = _calculatedCondition.DrawMate is false ? string.Empty : "Draw";
         }
 
         SetupBack();
@@ -1108,7 +1104,7 @@ public class ChessEngine : INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Graphically selects a square
+    /// Graphically selects a square.
     /// </summary>
     private void SelectSquare(Coords coords, bool ai = false, bool main = false)
     {
@@ -1131,7 +1127,7 @@ public class ChessEngine : INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Graphically deselects a square
+    /// Graphically deselects a square.
     /// </summary>
     private void DeselectSquare(Coords coords)
     {
@@ -1143,7 +1139,7 @@ public class ChessEngine : INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Graphically deselects squares during the Emulator turn
+    /// Graphically deselects squares during the Emulator turn.
     /// </summary>
     private void DeselectAiCoords()
     {
@@ -1173,7 +1169,7 @@ public class ChessEngine : INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Generates rectangle that highlights the selected square
+    /// Generates rectangle that highlights the selected square.
     /// </summary>
     private static Rectangle GenerateSelectedSquare(Brush color) => new()
     {
@@ -1192,7 +1188,12 @@ public class ChessEngine : INotifyPropertyChanged
     /// <returns></returns>
     private Image GeneratePieceImage(PieceChar pc, bool forWrapPanel = false)
     {
-        var image = new Image { IsHitTestVisible = false, Tag = pc };
+        var image = new Image
+        {
+            IsHitTestVisible = false,
+            Tag = pc
+        };
+        
         image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
 
         if (forWrapPanel)
@@ -1214,7 +1215,7 @@ public class ChessEngine : INotifyPropertyChanged
         Padding = new Thickness(3),
         Text = "No piece has been lost."
     };
-    
+
     /// <summary>
     /// Executes half turn generated by the Emulator.
     /// </summary>
@@ -1224,26 +1225,29 @@ public class ChessEngine : INotifyPropertyChanged
         {
             return;
         }
-        
+
         _timerUpdateUi.Start();
         ProgressValueStatic++;
         _dt = DateTime.Now;
 
         _turnTask = Task.Run(() =>
-        {
-            var difficulty = _condition.WhiteOnTurn ? Settings.WhiteDifficulty : Settings.BlackDifficulty;
-
-            var halfTurn = _emulator.BestHalfTurn(_calculatedCondition, _condition, difficulty);
-
-            _timerUpdateUi.Stop();
-            TimerUpdateUi_Tick(null, null);
-
-            CalculatedConditionData.ClearTrash();
-
-            var calculationTime = DateTime.Now - _dt;
-
-            if (halfTurn is not null)
             {
+                var difficulty = _condition.WhiteOnTurn ? Settings.WhiteDifficulty : Settings.BlackDifficulty;
+                var halfTurn = _emulator.BestHalfTurn(_calculatedCondition, _condition, difficulty);
+
+                _timerUpdateUi.Stop();
+                TimerUpdateUi_Tick(null, null);
+
+                CalculatedConditionData.ClearTrash();
+
+                var calculationTime = DateTime.Now - _dt;
+                var turn = Emulator.InterruptHalfTurn ? null : halfTurn;
+
+                if (halfTurn is null)
+                {
+                    return turn;
+                }
+
                 var wait = (int)(TimeSpan.FromSeconds(Settings.CalculationMinTime) - calculationTime)
                     .TotalMilliseconds;
 
@@ -1251,39 +1255,45 @@ public class ChessEngine : INotifyPropertyChanged
                 {
                     Task.Delay(wait).Wait();
                 }
-            }
 
-            return Emulator.InterruptHalfTurn ? null : halfTurn;
-        }).ContinueWith(task => //Task run after the turn calculation is complete.
-        {
-            ProgressValueStatic = 0;
-            ProgressValue = 0;
+                return turn;
+            })
+            .ContinueWith(task =>
+                {
+                    // Task run after the turn calculation is complete.
+                    ProgressValueStatic = 0;
+                    ProgressValue = 0;
 
-            var halfTurn = task.Result;
+                    var halfTurn = task.Result;
 
-            if (halfTurn is null && Settings.NewGame is false)
-            {
-                return;
-            }
+                    if (halfTurn is null && Settings.NewGame is false)
+                    {
+                        return;
+                    }
 
-            TurnLength = Math.Round((DateTime.Now - _dt).TotalSeconds, 1);
-            DeselectAiCoords();
+                    TurnLength = Math.Round((DateTime.Now - _dt).TotalSeconds, 1);
+                    DeselectAiCoords();
 
-            if (halfTurn is null)
-            {
-                return;
-            }
+                    if (halfTurn is null)
+                    {
+                        return;
+                    }
 
-            MovePiece(halfTurn.From, halfTurn.To, true);
-            DrawCalculatedSituation();
-            _selectedAiCoords = new Coords[2];
-            _selectedAiCoords[0] = halfTurn.From;
-            SelectSquare(halfTurn.From, true);
-            _selectedAiCoords[1] = halfTurn.To;
-            SelectSquare(halfTurn.To, true);
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+                    MovePiece(halfTurn.From, halfTurn.To, true);
+                    DrawCalculatedSituation();
+
+                    _selectedAiCoords = new Coords[2];
+                    _selectedAiCoords[0] = halfTurn.From;
+
+                    SelectSquare(halfTurn.From, true);
+
+                    _selectedAiCoords[1] = halfTurn.To;
+
+                    SelectSquare(halfTurn.To, true);
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
     }
-    
+
     /// <summary>
     /// Refreshing UI during turn calculation.
     /// </summary>

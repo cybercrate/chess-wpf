@@ -20,10 +20,10 @@ internal class Knight : Piece
             return;
         }
 
-        // Processed coordinates
+        // Processed coordinates.
         Coords processedCoords;
 
-        // Top side
+        // Top side.
         if (coords.Row > 1 && coords.Column > 0)
         {
             processedCoords = new Coords((sbyte)(coords.Row - 2), (sbyte)(coords.Column - 1));
@@ -44,7 +44,7 @@ internal class Knight : Piece
             }
         }
 
-        // Bottom side
+        // Bottom side.
         if (coords.Row < 6 && coords.Column > 0)
         {
             processedCoords = new Coords((sbyte)(coords.Row + 2), (sbyte)(coords.Column - 1));
@@ -65,7 +65,7 @@ internal class Knight : Piece
             }
         }
 
-        // Left side
+        // Left side.
         if (coords.Row > 0 && coords.Column > 1)
         {
             processedCoords = new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column - 2));
@@ -86,7 +86,7 @@ internal class Knight : Piece
             }
         }
 
-        // Right side
+        // Right side.
         if (coords.Row > 0 && coords.Column < 6)
         {
             processedCoords = new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column + 2));
@@ -131,45 +131,45 @@ internal class Knight : Piece
         // Top side.
         if (coords.Row > 1 && coords.Column > 0)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row - 2), (sbyte) (coords.Column - 1)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 2), (sbyte)(coords.Column - 1)));
         }
 
         if (coords.Row > 1 && coords.Column < 7)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row - 2), (sbyte) (coords.Column + 1)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 2), (sbyte)(coords.Column + 1)));
         }
 
         // Bottom side.
         if (coords.Row < 6 && coords.Column > 0)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row + 2), (sbyte) (coords.Column - 1)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 2), (sbyte)(coords.Column - 1)));
         }
 
         if (coords.Row < 6 && coords.Column < 7)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row + 2), (sbyte) (coords.Column + 1)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 2), (sbyte)(coords.Column + 1)));
         }
 
         // Left side.
         if (coords.Row > 0 && coords.Column > 1)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row - 1), (sbyte) (coords.Column - 2)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column - 2)));
         }
 
         if (coords.Row < 7 && coords.Column > 1)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row + 1), (sbyte) (coords.Column - 2)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column - 2)));
         }
 
         // Right side.
         if (coords.Row > 0 && coords.Column < 6)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row - 1), (sbyte) (coords.Column + 2)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column + 2)));
         }
 
         if (coords.Row < 7 && coords.Column < 6)
         {
-            possibleAttacks.Add(new Coords((sbyte) (coords.Row + 1), (sbyte) (coords.Column + 2)));
+            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column + 2)));
         }
 
         PossibleAttacks = possibleAttacks.ToArray();

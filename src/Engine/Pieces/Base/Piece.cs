@@ -34,11 +34,8 @@ internal abstract class Piece: IPiece
     /// </summary>
     public Coords[] PossibleAttacks { get; protected set; } = null!;
 
-    protected Piece(bool white)
-    {
-        White = white;
-    }
-    
+    protected Piece(bool white) => White = white;
+
     /// <summary>
     /// Updates possible moves based on check condition.
     /// </summary>

@@ -44,10 +44,10 @@ internal class File
             throw new Exception("Missing data.");
         }
 
-        // Creating file
+        // Creating file.
         var fs = System.IO.File.Create(fileName);
 
-        // Writing data into the file
+        // Writing data into the file.
         using StreamWriter sw = new(fs);
         
         WriteBasicData(sw, Condition);
@@ -185,7 +185,7 @@ internal class File
             {
                 c = (char)sr.Read();
                 
-                // If there is no other char to read, sr.Read() returns '\uffff'
+                // If there is no other char to read, sr.Read() returns '\uffff'.
                 if (c is '\uffff')
                 {
                     return null;
@@ -239,7 +239,7 @@ internal class File
         c = (char)sr.Read();
         var c2 = (char)sr.Read();
         
-        if (c2 != '\r')
+        if (c2 is not '\r')
         {
             var c3 = (char)sr.Read();
             

@@ -1,5 +1,4 @@
-﻿using Engine;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Engine.UtilityComponents;
 
@@ -24,6 +23,7 @@ public partial class NewGameUserControl
     public NewGameUserControl(Action loadChessUserControl, bool newGame)
     {
         InitializeComponent();
+        
         _newGame = newGame;
         
         if (newGame is false)

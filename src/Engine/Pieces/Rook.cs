@@ -94,7 +94,7 @@ internal class Rook : MovablePiece
             // Square has a piece.
             else
             {
-                // Piece is enemy
+                // Piece is enemy.
                 if (condition.Chessboard[row, coords.Column].White != White)
                 {
                     possibleMoves.Add(new Coords(row, coords.Column));
@@ -186,7 +186,7 @@ internal class Rook : MovablePiece
                 // Checking whether there is enemy king behind the enemy piece.
                 if (condition.Chessboard[coords.Row, col].White != White)
                 {
-                    // Continuing in row after finding the 2nd piece
+                    // Continuing in row after finding the 2nd piece.
                     for (var col2 = (sbyte)(col + 1); col2 < 8; col2++)
                     {
                         // Piece found.
@@ -231,7 +231,7 @@ internal class Rook : MovablePiece
                 // Checking whether there is enemy king behind the enemy piece.
                 if (condition.Chessboard[row, coords.Column].White != White)
                 {
-                    // Continuing in row after finding the 2nd piece
+                    // Continuing in row after finding the 2nd piece.
                     for (var row2 = (sbyte)(row - 1); row2 >= 0; row2--)
                     {
                         // Piece found.
@@ -260,7 +260,7 @@ internal class Rook : MovablePiece
             }
         }
         
-        // Bottom side
+        // Bottom side.
         for (var row = (sbyte)(coords.Row + 1); row < 8; row++)
         {
             // If the square is empty.
@@ -287,7 +287,7 @@ internal class Rook : MovablePiece
                         // King found.
                         if (condition.Chessboard[row2, coords.Column].Status is 'k')
                         {
-                            // Enemy king..
+                            // Enemy king.
                             if (condition.Chessboard[row2, coords.Column].White != White)
                             {
                                 PieceProtectingKingCoords = new Coords(row, coords.Column);

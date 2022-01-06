@@ -1,10 +1,10 @@
 ﻿using Engine;
+using Engine.UtilityComponents;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Engine.UtilityComponents;
 
 namespace Chess.View.UserControls;
 
@@ -13,7 +13,7 @@ namespace Chess.View.UserControls;
 /// </summary>
 public partial class ChessUserControls
 {
-    private readonly Engine.ChessEngine _chessEngine;
+    private readonly ChessEngine _chessEngine;
     
     private readonly Action<bool> _loadNewGameUserControl;
     
@@ -22,6 +22,7 @@ public partial class ChessUserControls
     public ChessUserControls(Action<bool> loadNewGameUserControl)
     {
         InitializeComponent();
+        
         _resizeTimer.Tick += ResizeTimer_Tick;
         
         // Create chessboard made of buttons.
@@ -52,7 +53,7 @@ public partial class ChessUserControls
             }
         }
 
-        _chessEngine = new Engine.ChessEngine(
+        _chessEngine = new ChessEngine(
             buttons,
             TextBlockOnTurn,
             StatusTextBlock,
@@ -116,12 +117,12 @@ public partial class ChessUserControls
     }
 
     /// <summary>
-    /// Taken piece image ratio to the whole play board
+    /// Taken piece image ratio to the whole play board.
     /// </summary>
     private const double SizeRatio = 0.105;
     
     /// <summary>
-    /// Modifies controls layout based on window size
+    /// Modifies controls layout based on window size.
     /// </summary>
     private void GridSizeRatio_SizeChanged(object sender, SizeChangedEventArgs e)
     {
@@ -147,23 +148,19 @@ public partial class ChessUserControls
     }
     
     /// <summary>
-    /// Square click event
+    /// Square click event.
     /// </summary>
-    private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        _chessEngine.ButtonClick((Coords)((Button)e.Source).Tag);
-    }
-    
+    private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
+        _chessEngine.ButtonClick((Coords)(e.Source as Button)!.Tag);
+
     /// <summary>
-    /// First recalculation of taken pieces image
+    /// First recalculation of taken pieces image.
     /// </summary>
-    private void GridSizeRatio_Loaded(object sender, RoutedEventArgs e)
-    {
+    private void GridSizeRatio_Loaded(object sender, RoutedEventArgs e) =>
         _chessEngine.ImageSizeWrapPanel = Grid.ActualHeight * SizeRatio;
-    }
-    
+
     /// <summary>
-    /// New game button click event
+    /// New game button click event.
     /// </summary>
     private void NewMenuItem_Click(object sender, RoutedEventArgs e)
     {

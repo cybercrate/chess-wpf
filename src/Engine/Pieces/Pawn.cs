@@ -49,7 +49,7 @@ internal class Pawn : Piece
                     // On the left attack square is a piece?
                     if (condition.Chessboard[coords.Row + 1, coords.Column - 1].Status is not 'n')
                     {
-                        // Piece is enemy
+                        // Piece is enemy.
                         if (condition.Chessboard[coords.Row + 1, coords.Column - 1].White != White)
                         {
                             possibleMoves.Add(new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column - 1)));
@@ -174,7 +174,7 @@ internal class Pawn : Piece
                 {
                     possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column - 1)));
                 }
-                // Checking whether the pawn isn't in the right column
+                // Checking whether the pawn isn't in the right column.
                 if (coords.Column is not 7)
                 {
                     possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column + 1)));

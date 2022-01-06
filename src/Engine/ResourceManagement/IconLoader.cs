@@ -1,19 +1,22 @@
-﻿namespace Engine.ResourceManagement;
+﻿using System.Windows.Media.Imaging;
+
+namespace Engine.ResourceManagement;
 
 public static class IconLoader
 {
     private const string RelativePath = $"{ResourcePath.ResourcesRelativePath}/Icons";
+    
+    private const string Main = "MainIcon.ico";
 
     private const string Back = "BackIcon.png";
     private const string Exit = "ExitIcon.png";
-    private const string Forward = "FowardIcon.png";
-    private const string Main = "BackIcon.ico";
-    private const string New = "BackIcon.png";
-    private const string Open = "BackIcon.png";
-    private const string Save = "BackIcon.png";
-    private const string Settings = "BackIcon.png";
-    
-    public static string GeneratePath(IconType type)
+    private const string Forward = "ForwardIcon.png";
+    private const string New = "NewIcon.png";
+    private const string Open = "OpenIcon.png";
+    private const string Save = "SaveIcon.png";
+    private const string Settings = "SettingsIcon.png";
+
+    private static string GeneratePath(IconType type)
     {
         var imageFile = type switch
         {
@@ -30,4 +33,11 @@ public static class IconLoader
 
         return $"{RelativePath}/{imageFile}";
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static BitmapImage GetImage(IconType type) => new(new Uri(GeneratePath(type), UriKind.Relative));
 }

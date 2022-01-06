@@ -96,7 +96,7 @@ internal class CalculatedCondition
 
                     switch (status)
                     {
-                        // Getting type of piece and recalculating
+                        // Getting type of piece and recalculating.
                         case 'n' or 'x':
                             continue;
                         case 'k':

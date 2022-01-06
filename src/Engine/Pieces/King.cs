@@ -60,7 +60,7 @@ internal class King : Piece
         }
 
         // Up.
-        pc = new Coords((sbyte) (coords.Row - 1), coords.Column);
+        pc = new Coords((sbyte)(coords.Row - 1), coords.Column);
 
         if (coords.Row > 0)
         {
@@ -120,7 +120,7 @@ internal class King : Piece
         }
 
         // Down.
-        pc = new Coords((sbyte) (coords.Row + 1), coords.Column);
+        pc = new Coords((sbyte)(coords.Row + 1), coords.Column);
 
         if (coords.Row < 7)
         {
@@ -156,14 +156,14 @@ internal class King : Piece
             {
                 if (condition.WhiteKingMoved is false)
                 {
-                    // Small castling (right)
+                    // Small castling (right).
                     if (condition.WhiteSmallRookMoved is false)
                     {
                         // Is Col + 1 square free and safe?
                         if (condition.Chessboard[coords.Row, coords.Column + 1].Status is 'n' or 'x' &&
                             PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column + 1))) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte) (coords.Column + 2));
+                            pc = new Coords(coords.Row, (sbyte)(coords.Column + 2));
                             
                             // Is Col + 2 square free and safe?
                             if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
@@ -179,9 +179,9 @@ internal class King : Piece
                     {
                         // Is Col - 1 square free and safe?
                         if (condition.Chessboard[coords.Row, coords.Column - 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte) (coords.Column - 1))) is false)
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column - 1))) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte) (coords.Column - 2));
+                            pc = new Coords(coords.Row, (sbyte)(coords.Column - 2));
                             
                             // Is Col - 2 square free and safe?
                             if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
@@ -201,14 +201,14 @@ internal class King : Piece
             {
                 if (condition.BlackKingMoved is false)
                 {
-                    // Small castling (right)
+                    // Small castling (right).
                     if (condition.BlackSmallRookMoved is false)
                     {
                         // Is Col +1 square free and safe?
                         if (condition.Chessboard[coords.Row, coords.Column + 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte) (coords.Column + 1))) is false)
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column + 1))) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte) (coords.Column + 2));
+                            pc = new Coords(coords.Row, (sbyte)(coords.Column + 2));
                             
                             // Is Col + 2 square free and safe?
                             if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
@@ -219,8 +219,8 @@ internal class King : Piece
                         }
                     }
 
-                    // Large castling (left)
-                    if (condition.BlackLargeRookMoved == false)
+                    // Large castling (left).
+                    if (condition.BlackLargeRookMoved is false)
                     {
                         // Is Col - 1 square free and safe?
                         if (condition.Chessboard[coords.Row, coords.Column - 1].Status is 'n' or 'x' &&

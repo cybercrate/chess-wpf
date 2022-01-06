@@ -3,7 +3,6 @@ using Engine.ResourceManagement;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Chess.View;
 
@@ -17,8 +16,8 @@ public partial class PieceSelection
     public PieceSelection(double chessboardWidth, bool white)
     {
         InitializeComponent();
-        Icon = new BitmapImage(new Uri("Resources/Images/Icons/MainIcon.ico", UriKind.Relative));
         
+        Icon = IconLoader.GetImage(IconType.Main);
         Height = chessboardWidth / 8 * 1.3 + 10;
         Width = chessboardWidth / 2 * 1.3 + 10;
 
@@ -57,19 +56,19 @@ public partial class PieceSelection
     {
         if (e.Source is Button)
         {
-            if (e.Source == RookButton)
+            if (Equals(e.Source, RookButton))
             {
                 Status = 'v';
             }
-            else if (e.Source == KnightButton)
+            else if (Equals(e.Source, KnightButton))
             {
                 Status = 'j';
             }
-            else if (e.Source == BishopButton)
+            else if (Equals(e.Source, BishopButton))
             {
                 Status = 's';
             }
-            else if (e.Source == QueenButton)
+            else if (Equals(e.Source, QueenButton))
             {
                 Status = 'd';
             }

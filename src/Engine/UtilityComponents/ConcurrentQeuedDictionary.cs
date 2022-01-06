@@ -33,7 +33,7 @@ public class ConcurrentQueuedDictionary<TKey, TValue>
     public void ClearTrash()
     {
         _clearingTask.Wait();
-        
+
         _clearingTask = Task.Run(() =>
         {
             while (_clearedCapacity < _dictionary.Count)
