@@ -1,5 +1,5 @@
-﻿using Engine.Pieces.Base;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
+using Engine.Pieces.Types;
 
 namespace Engine.ResourceManagement;
 
@@ -26,22 +26,22 @@ public static class ImageLoader
     /// <param name="type"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private static string GeneratePath(ChessmanType type)
+    private static string GeneratePath(Chessman type)
     {
         var imageSource = type switch
         {
-            ChessmanType.PawnWhite => PawnWhite,
-            ChessmanType.PawnBlack => PawnBlack,
-            ChessmanType.KnightWhite => KnightWhite,
-            ChessmanType.KnightBlack => KnightBlack,
-            ChessmanType.BishopWhite => BishopWhite,
-            ChessmanType.BishopBlack => BishopBlack,
-            ChessmanType.RookWhite => RookWhite,
-            ChessmanType.RookBlack => RookBlack,
-            ChessmanType.QueenWhite => QueenWhite,
-            ChessmanType.QueenBlack => QueenBlack,
-            ChessmanType.KingWhite => KingWhite,
-            ChessmanType.KingBlack => KingBlack,
+            Chessman.PawnWhite => PawnWhite,
+            Chessman.PawnBlack => PawnBlack,
+            Chessman.KnightWhite => KnightWhite,
+            Chessman.KnightBlack => KnightBlack,
+            Chessman.BishopWhite => BishopWhite,
+            Chessman.BishopBlack => BishopBlack,
+            Chessman.RookWhite => RookWhite,
+            Chessman.RookBlack => RookBlack,
+            Chessman.QueenWhite => QueenWhite,
+            Chessman.QueenBlack => QueenBlack,
+            Chessman.KingWhite => KingWhite,
+            Chessman.KingBlack => KingBlack,
             _ => throw new Exception()
         };
         
@@ -51,20 +51,20 @@ public static class ImageLoader
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="type"></param>
+    /// <param name="status"></param>
     /// <param name="white"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private static string GeneratePath(char type, bool white)
+    private static string GeneratePath(Status status, bool white)
     {
-        var imageSource = type switch
+        var imageSource = status switch
         {
-            'p' or 'x' => white ? PawnWhite : PawnBlack,
-            'v' => white ? RookWhite : RookBlack,
-            'j' => white ? KnightWhite : KnightBlack,
-            's' => white ? BishopWhite : BishopBlack,
-            'd' => white ? QueenWhite : QueenBlack,
-            'k' => white ? KingWhite : KingBlack,
+            Status.Pawn or Status.EnPassant => white ? PawnWhite : PawnBlack,
+            Status.Rook => white ? RookWhite : RookBlack,
+            Status.Knight => white ? KnightWhite : KnightBlack,
+            Status.Bishop => white ? BishopWhite : BishopBlack,
+            Status.Queen => white ? QueenWhite : QueenBlack,
+            Status.King => white ? KingWhite : KingBlack,
             _ => throw new Exception()
         };
 
@@ -76,14 +76,14 @@ public static class ImageLoader
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static BitmapImage GetImage(ChessmanType type) => new(new Uri(GeneratePath(type), UriKind.Relative));
+    public static BitmapImage GetImage(Chessman type) => new(new Uri(GeneratePath(type), UriKind.Relative));
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="type"></param>
+    /// <param name="status"></param>
     /// <param name="white"></param>
     /// <returns></returns>
-    public static BitmapImage GetImage(char type, bool white) =>
-        new(new Uri(GeneratePath(type, white), UriKind.Relative));
+    public static BitmapImage GetImage(Status status, bool white) =>
+        new(new Uri(GeneratePath(status, white), UriKind.Relative));
 }

@@ -15,9 +15,9 @@ public readonly struct Coords
     /// </summary>
     public sbyte Column { get; }
     
-    public Coords(sbyte row, sbyte column)
+    public Coords(int row, int column)
     {
-        Row = row;
-        Column = column;
+        Row = (sbyte)row;
+        Column = (sbyte)column;
     }
 }

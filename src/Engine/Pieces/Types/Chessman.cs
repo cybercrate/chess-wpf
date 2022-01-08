@@ -1,6 +1,6 @@
-﻿namespace Engine.Pieces.Base;
+﻿namespace Engine.Pieces.Types;
 
-public enum ChessmanType
+public enum Chessman
 {
     PawnWhite,
     PawnBlack,

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Engine.Pieces.Types;
 
 namespace Chess.View.UserControls;
 
@@ -68,7 +69,7 @@ public partial class ChessUserControls
         DataContext = _chessEngine;
     }
 
-    private char OpenPieceChoice(bool white)
+    private Status OpenPieceChoice(bool white)
     {
         PieceSelection ps = new(Grid.ActualWidth, white) { Owner = Application.Current.MainWindow };
         
@@ -83,7 +84,7 @@ public partial class ChessUserControls
 
         return ps.Status;
     }
-    
+
     /// <summary>
     /// Timer that allows to run code after window size change.
     /// </summary>

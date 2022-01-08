@@ -1,21 +1,22 @@
 ﻿using Engine.Conditions;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.AI;
 
-internal class Emulator
+internal static class Emulator
 {
     private static readonly Random Random = new();
-    private static readonly Dictionary<char, int> PiecesValues = new();
+    private static readonly Dictionary<Status, int> PiecesValues = new();
 
     static Emulator()
     {
-        PiecesValues.Add('p', 1);
-        PiecesValues.Add('x', 1);
-        PiecesValues.Add('j', 3);
-        PiecesValues.Add('s', 3);
-        PiecesValues.Add('v', 5);
-        PiecesValues.Add('d', 9);
+        PiecesValues.Add(Status.Pawn, 1);
+        PiecesValues.Add(Status.EnPassant, 1);
+        PiecesValues.Add(Status.Knight, 3);
+        PiecesValues.Add(Status.Bishop, 3);
+        PiecesValues.Add(Status.Rook, 5);
+        PiecesValues.Add(Status.Queen, 9);
     }
 
     /// <summary>
@@ -26,7 +27,7 @@ internal class Emulator
     /// <summary>
     /// Selects halfTurn from calculated condition. Calculation is done in parallel.
     /// </summary>
-    public HalfTurn? BestHalfTurn(CalculatedCondition calcCondition, Condition condition, int depth)
+    public static HalfTurn? BestHalfTurn(CalculatedCondition calcCondition, Condition condition, int depth)
     {
         InterruptHalfTurn = false;
         var possibleHalfTurns = PossibleHalfTurns(calcCondition);
@@ -64,7 +65,7 @@ internal class Emulator
         {
             if (possibleMoves[i].Value > bestMoves[0].Value)
             {
-                bestMoves = new List<HalfTurn> {possibleMoves[i]};
+                bestMoves = new List<HalfTurn> { possibleMoves[i] };
             }
             else if (possibleMoves[i].Value == bestMoves[0].Value)
             {
@@ -96,17 +97,17 @@ internal class Emulator
         var possibleHalfTurns = PossibleHalfTurns(calcCondition);
         var max = int.MinValue;
 
-        if (depth == 0)
+        if (depth is 0)
         {
             foreach (HalfTurn halfTurn in possibleHalfTurns)
             {
                 BasicEvaluating(condition, halfTurn);
 
-                if (CalculatedCondition.GetDataOfCalculatedSituation(condition)!.EnemyPossibleAttacks
-                    .Contains(halfTurn.To))
+                if (CalculatedCondition.GetDataOfCalculatedSituation(condition)!
+                    .EnemyPossibleAttacks.Contains(halfTurn.To))
                 {
-                    halfTurn.Value -=
-                        PiecesValues[condition.Chessboard[halfTurn.From.Row, halfTurn.From.Column].Status];
+                    var pieceValue = PiecesValues[condition.Chessboard[halfTurn.From.Row, halfTurn.From.Column].Status];
+                    halfTurn.Value -= pieceValue;
                 }
 
                 if (max < halfTurn.Value)
@@ -148,16 +149,16 @@ internal class Emulator
         var fromStatus = condition.Chessboard[halfTurn.From.Row, halfTurn.From.Column].Status;
 
         // Evaluating taking enemy piece.
-        if (toStatus is not 'n')
+        if (toStatus is not Status.Empty)
         {
             // Evaluating en passant (only pawn can take pawn en passant).
-            if (toStatus is not 'x' && fromStatus is 'p')
+            if (toStatus is not Status.EnPassant && fromStatus is Status.Pawn)
             {
                 halfTurn.Value += PiecesValues[toStatus];
             }
         }
 
-        if (fromStatus is not 'p')
+        if (fromStatus is not Status.Pawn)
         {
             // Evaluating pawn at the ends of row.
             return;

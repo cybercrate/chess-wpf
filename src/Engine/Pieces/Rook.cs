@@ -1,5 +1,6 @@
 ﻿using Engine.Conditions;
 using Engine.Pieces.Base;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
@@ -24,7 +25,7 @@ internal class Rook : MovablePiece
         for (var col = (sbyte)(coords.Column - 1); col >= 0; col--)
         {
             // If the square is empty.
-            if (condition.Chessboard[coords.Row, col].Status is 'n' or 'x')
+            if (condition.Chessboard[coords.Row, col].Status is Status.Empty or Status.EnPassant)
             {
                 possibleMoves.Add(new Coords(coords.Row, col));
             }
@@ -45,7 +46,7 @@ internal class Rook : MovablePiece
         for (var col = (sbyte)(coords.Column + 1); col < 8; col++)
         {
             // If the square is empty.
-            if (condition.Chessboard[coords.Row, col].Status is 'n' or 'x')
+            if (condition.Chessboard[coords.Row, col].Status is Status.Empty or Status.EnPassant)
             {
                 possibleMoves.Add(new Coords(coords.Row, col));
             }
@@ -66,7 +67,7 @@ internal class Rook : MovablePiece
         for (var row = (sbyte)(coords.Row - 1); row >= 0; row--)
         {
             // If the square is empty.
-            if (condition.Chessboard[row, coords.Column].Status is 'n' or 'x')
+            if (condition.Chessboard[row, coords.Column].Status is Status.Empty or Status.EnPassant)
             {
                 possibleMoves.Add(new Coords(row, coords.Column));
             }
@@ -87,7 +88,7 @@ internal class Rook : MovablePiece
         for (var row = (sbyte)(coords.Row + 1); row < 8; row++)
         {
             // If the square is empty.
-            if (condition.Chessboard[row, coords.Column].Status is 'n' or 'x')
+            if (condition.Chessboard[row, coords.Column].Status is Status.Empty or Status.EnPassant)
             {
                 possibleMoves.Add(new Coords(row, coords.Column));
             }
@@ -129,7 +130,7 @@ internal class Rook : MovablePiece
         for (var col = (sbyte)(coords.Column - 1); col >= 0; col--)
         {
             // If the square is empty.
-            if (condition.Chessboard[coords.Row, col].Status is 'n' or 'x')
+            if (condition.Chessboard[coords.Row, col].Status is Status.Empty or Status.EnPassant)
             {
                 possibleAttacks.Add(new Coords(coords.Row, col));
             }
@@ -144,14 +145,16 @@ internal class Rook : MovablePiece
                     // Continuing in row after finding the 2nd piece.
                     for (var col2 = (sbyte)(col - 1); col2 >= 0; col2--)
                     {
+                        var status = condition.Chessboard[coords.Row, col2].Status;
+                        
                         // Piece found.
-                        if (condition.Chessboard[coords.Row, col2].Status is 'n' or 'x')
+                        if (status is Status.Empty or Status.EnPassant)
                         {
                             continue;
                         }
                         
                         // King found.
-                        if (condition.Chessboard[coords.Row, col2].Status is 'k')
+                        if (status is Status.King)
                         {
                             // Enemy king.
                             if (condition.Chessboard[coords.Row, col2].White != White)
@@ -174,7 +177,7 @@ internal class Rook : MovablePiece
         for (var col = (sbyte)(coords.Column + 1); col < 8; col++)
         {
             // If the square is empty.
-            if (condition.Chessboard[coords.Row, col].Status is 'n' or 'x')
+            if (condition.Chessboard[coords.Row, col].Status is Status.Empty or Status.EnPassant)
             {
                 possibleAttacks.Add(new Coords(coords.Row, col));
             }
@@ -190,13 +193,13 @@ internal class Rook : MovablePiece
                     for (var col2 = (sbyte)(col + 1); col2 < 8; col2++)
                     {
                         // Piece found.
-                        if (condition.Chessboard[coords.Row, col2].Status is 'n' or 'x')
+                        if (condition.Chessboard[coords.Row, col2].Status is Status.Empty or Status.EnPassant)
                         {
                             continue;
                         }
                         
                         // King found.
-                        if (condition.Chessboard[coords.Row, col2].Status is 'k')
+                        if (condition.Chessboard[coords.Row, col2].Status is Status.King)
                         {
                             // Enemy king.
                             if (condition.Chessboard[coords.Row, col2].White != White)
@@ -219,7 +222,7 @@ internal class Rook : MovablePiece
         for (var row = (sbyte)(coords.Row - 1); row >= 0; row--)
         {
             // If the square is empty.
-            if (condition.Chessboard[row, coords.Column].Status is 'n' or 'x')
+            if (condition.Chessboard[row, coords.Column].Status is Status.Empty or Status.EnPassant)
             {
                 possibleAttacks.Add(new Coords(row, coords.Column));
             }
@@ -235,13 +238,13 @@ internal class Rook : MovablePiece
                     for (var row2 = (sbyte)(row - 1); row2 >= 0; row2--)
                     {
                         // Piece found.
-                        if (condition.Chessboard[row2, coords.Column].Status is 'n' or 'x')
+                        if (condition.Chessboard[row2, coords.Column].Status is Status.Empty or Status.EnPassant)
                         {
                             continue;
                         }
                         
                         // King found.
-                        if (condition.Chessboard[row2, coords.Column].Status is 'k')
+                        if (condition.Chessboard[row2, coords.Column].Status is Status.King)
                         {
                             // Enemy king.
                             if (condition.Chessboard[row2, coords.Column].White != White)
@@ -264,7 +267,7 @@ internal class Rook : MovablePiece
         for (var row = (sbyte)(coords.Row + 1); row < 8; row++)
         {
             // If the square is empty.
-            if (condition.Chessboard[row, coords.Column].Status is 'n' or 'x')
+            if (condition.Chessboard[row, coords.Column].Status is Status.Empty or Status.EnPassant)
             {
                 possibleAttacks.Add(new Coords(row, coords.Column));
             }
@@ -279,13 +282,13 @@ internal class Rook : MovablePiece
                     for (var row2 = (sbyte)(row + 1); row2 < 8; row2++)
                     {
                         // Piece found.
-                        if (condition.Chessboard[row2, coords.Column].Status is 'n' or 'x')
+                        if (condition.Chessboard[row2, coords.Column].Status is Status.Empty or Status.EnPassant)
                         {
                             continue;
                         }
                         
                         // King found.
-                        if (condition.Chessboard[row2, coords.Column].Status is 'k')
+                        if (condition.Chessboard[row2, coords.Column].Status is Status.King)
                         {
                             // Enemy king.
                             if (condition.Chessboard[row2, coords.Column].White != White)

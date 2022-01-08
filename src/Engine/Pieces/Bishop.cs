@@ -1,5 +1,6 @@
 ﻿using Engine.Conditions;
 using Engine.Pieces.Base;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
@@ -32,7 +33,7 @@ internal class Bishop: MovablePiece
             if (row >= 0)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleMoves.Add(new Coords(row, col));
                 }
@@ -63,7 +64,7 @@ internal class Bishop: MovablePiece
             if (row >= 0)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleMoves.Add(new Coords(row, col));
                 }
@@ -94,7 +95,7 @@ internal class Bishop: MovablePiece
             if (row < 8)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleMoves.Add(new Coords(row, col));
                 }
@@ -125,7 +126,7 @@ internal class Bishop: MovablePiece
             if (row < 8)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleMoves.Add(new Coords(row, col));
                 }
@@ -179,7 +180,7 @@ internal class Bishop: MovablePiece
             if (row >= 0)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleAttacks.Add(new Coords(row, col));
                 }
@@ -202,13 +203,13 @@ internal class Bishop: MovablePiece
                             if (row2 >= 0)
                             {
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is 'n' or 'x')
+                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
                                 
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is 'k')
+                                if (condition.Chessboard[row2, col2].Status is Status.King)
                                 {
                                     // Enemy king..
                                     if (condition.Chessboard[row2, col2].White != White)
@@ -246,7 +247,7 @@ internal class Bishop: MovablePiece
             if (row >= 0)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleAttacks.Add(new Coords(row, col));
                 }
@@ -268,13 +269,13 @@ internal class Bishop: MovablePiece
                             if (row2 >= 0)
                             {
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is 'n' or 'x')
+                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
                                 
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is 'k')
+                                if (condition.Chessboard[row2, col2].Status is Status.King)
                                 {
                                     // Enemy king.
                                     if (condition.Chessboard[row2, col2].White != White)
@@ -312,7 +313,7 @@ internal class Bishop: MovablePiece
             if (row < 8)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleAttacks.Add(new Coords(row, col));
                 }
@@ -336,13 +337,13 @@ internal class Bishop: MovablePiece
                             if (row2 < 8)
                             {
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is 'n' or 'x')
+                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
                                 
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is 'k')
+                                if (condition.Chessboard[row2, col2].Status is Status.King)
                                 {
                                     // Enemy king.
                                     if (condition.Chessboard[row2, col2].White != White)
@@ -379,7 +380,7 @@ internal class Bishop: MovablePiece
             if (row < 8)
             {
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is 'n' or 'x')
+                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
                 {
                     possibleAttacks.Add(new Coords(row, col));
                 }
@@ -403,13 +404,13 @@ internal class Bishop: MovablePiece
                             if (row2 < 8)
                             {
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is 'n' or 'x')
+                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
                                 
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is 'k')
+                                if (condition.Chessboard[row2, col2].Status is Status.King)
                                 {
                                     // Enemy king.
                                     if (condition.Chessboard[row2, col2].White != White)

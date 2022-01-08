@@ -1,7 +1,6 @@
 ﻿using Engine.AI;
 using Engine.Conditions;
 using Engine.IO;
-using Engine.Pieces.Base;
 using Engine.ResourceManagement;
 using Engine.UtilityComponents;
 using Microsoft.Win32;
@@ -11,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Engine.Pieces.Types;
 
 namespace Engine;
 
@@ -59,17 +59,14 @@ public class ChessEngine : INotifyPropertyChanged
     private readonly DispatcherTimer _timerUpdateUi;
     
     // Opens dialog window with pawn promotion options.
-    private readonly Func<bool, char> _openPromotionOptions;
+    private readonly Func<bool, Status> _openPromotionOptions;
     
     // Logically and memory inexpensive recorded condition.
     private Conditions.Condition _condition = null!;
     
     // Calculated condition, including pieces and their possible moves.
     private CalculatedCondition _calculatedCondition = null!;
-    
-    // Artificial intelligence.
-    private readonly Emulator _emulator = new();
-    
+
     // Task that calculates half turn of Emulator.
     private Task _turnTask = Task.Delay(0);
     
@@ -148,7 +145,7 @@ public class ChessEngine : INotifyPropertyChanged
         WrapPanel whiteLost,
         WrapPanel blackLost,
         Grid progressBar,
-        Func<bool, char> openPromotionOptions)
+        Func<bool, Status> openPromotionOptions)
     {
         _buttons = buttons;
         _textBlockOnTurn = textBlockOnTurn;
@@ -173,40 +170,40 @@ public class ChessEngine : INotifyPropertyChanged
         
         // Taking pieces and promotions.
         // Checking whether piece has taken a pawn en passant.
-        if (condition.Chessboard[from.Row, from.Column].Status is 'p')
+        if (condition.Chessboard[from.Row, from.Column].Status is Status.Pawn)
         {
             // If the pawn moves, draw50 is invalid.
             draw50 = false;
             
-            if (condition.Chessboard[to.Row, to.Column].Status is 'x')
+            if (condition.Chessboard[to.Row, to.Column].Status is Status.EnPassant)
             {
                 var row = to.Row is 2 ? to.Row + 1 : to.Row - 1;
-                condition.Chessboard[row, to.Column].Status = 'n';
+                condition.Chessboard[row, to.Column].Status = Status.Empty;
             }
         }
         
         // Removing previous taking en passant.
         for (var i = 0; i < 8; i++)
         {
-            if (condition.Chessboard[2, i].Status is 'x')
+            if (condition.Chessboard[2, i].Status is Status.EnPassant)
             {
-                condition.Chessboard[2, i].Status = 'n';
+                condition.Chessboard[2, i].Status = Status.Empty;
                 break;
             }
 
-            if (condition.Chessboard[5, i].Status is not 'x')
+            if (condition.Chessboard[5, i].Status is not Status.EnPassant)
             {
                 continue;
             }
             
-            condition.Chessboard[5, i].Status = 'n';
+            condition.Chessboard[5, i].Status = Status.Empty;
             break;
         }
 
         switch (condition.Chessboard[from.Row, from.Column].Status)
         {
             // Checking new taking en passant.
-            case 'p':
+            case Status.Pawn:
             {
                 var move = from.Row - to.Row;
                 
@@ -217,7 +214,7 @@ public class ChessEngine : INotifyPropertyChanged
                     if (move < 0)
                     {
                         // Creating selection for taking en passant.
-                        condition.Chessboard[from.Row + 1, from.Column].Status = 'x';
+                        condition.Chessboard[from.Row + 1, from.Column].Status = Status.EnPassant;
                         
                         // Setting pawn color to square for taking en passant.
                         condition.Chessboard[from.Row + 1, from.Column].White =
@@ -227,7 +224,7 @@ public class ChessEngine : INotifyPropertyChanged
                     else 
                     {
                         // Creating selection for taking en passant.
-                        condition.Chessboard[from.Row - 1, from.Column].Status = 'x';
+                        condition.Chessboard[from.Row - 1, from.Column].Status = Status.EnPassant;
                         
                         // Setting pawn color to square for taking en passant.
                         condition.Chessboard[from.Row - 1, from.Column].White =
@@ -237,9 +234,8 @@ public class ChessEngine : INotifyPropertyChanged
 
                 break;
             }
-            
             // Castling.
-            case 'v' when from.Row is 0:
+            case Status.Rook when from.Row is 0:
             {
                 switch (from.Column)
                 {
@@ -253,7 +249,7 @@ public class ChessEngine : INotifyPropertyChanged
 
                 break;
             }
-            case 'v':
+            case Status.Rook:
             {
                 if (from.Row is 7)
                 {
@@ -270,7 +266,7 @@ public class ChessEngine : INotifyPropertyChanged
 
                 break;
             }
-            case 'k':
+            case Status.King:
             {
                 // Castling.
                 if (condition.Chessboard[from.Row, from.Column].White)
@@ -289,14 +285,14 @@ public class ChessEngine : INotifyPropertyChanged
                     if (position > 0)
                     {
                         // Left.
-                        MovePiece(new Coords(from.Row, (sbyte)(from.Column - 4)),
-                            new Coords(from.Row, (sbyte)(from.Column - 1)), condition);
+                        MovePiece(new Coords(from.Row, from.Column - 4),
+                            new Coords(from.Row, from.Column - 1), condition);
                     }
                     else
                     {
                         // Right.
-                        MovePiece(new Coords(from.Row, (sbyte)(from.Column + 3)),
-                            new Coords(from.Row, (sbyte)(from.Column + 1)), condition);
+                        MovePiece(new Coords(from.Row, from.Column + 3),
+                            new Coords(from.Row, from.Column + 1), condition);
                     }
                     
                     // Rook movement caused swapping white on turn.
@@ -309,7 +305,7 @@ public class ChessEngine : INotifyPropertyChanged
 
         var status = condition.Chessboard[to.Row, to.Column].Status;
         
-        if (status is not 'n' and not 'x')
+        if (status is not Status.Empty and not Status.EnPassant)
         {
             draw50 = false;
         }
@@ -318,7 +314,7 @@ public class ChessEngine : INotifyPropertyChanged
         condition.Chessboard[to.Row, to.Column] = condition.Chessboard[from.Row, from.Column];
         
         // Removing piece from old position.
-        condition.Chessboard[from.Row, from.Column].Status = 'n';
+        condition.Chessboard[from.Row, from.Column].Status = Status.Empty;
         
         // Is necessary to increment draw50 or null.
         if (draw50)
@@ -333,11 +329,11 @@ public class ChessEngine : INotifyPropertyChanged
         // Moving pawn to the last row - automatically promotes to queen.
         if (automaticPromotion)
         {
-            if (condition.Chessboard[to.Row, to.Column].Status is 'p')
+            if (condition.Chessboard[to.Row, to.Column].Status is Status.Pawn)
             {
                 if (to.Row is 7 or 0)
                 {
-                    condition.Chessboard[to.Row, to.Column].Status = 'd';
+                    condition.Chessboard[to.Row, to.Column].Status = Status.Queen;
                 }
             }
         }
@@ -420,7 +416,7 @@ public class ChessEngine : INotifyPropertyChanged
         if (_selectedCoords is null)
         {
             // If the square contains a piece of player that is on turn...
-            if (_condition.Chessboard[coords.Row, coords.Column].Status is 'n' or 'x' ||
+            if (_condition.Chessboard[coords.Row, coords.Column].Status is Status.Empty or Status.EnPassant ||
                 _condition.Chessboard[coords.Row, coords.Column].White != _condition.WhiteOnTurn)
             {
                 return;
@@ -472,7 +468,8 @@ public class ChessEngine : INotifyPropertyChanged
                     _selectedCoords = null;
                     
                     // If the square contains piece of player that is on turn...
-                    if (_condition.Chessboard[coords.Row, coords.Column].Status is not 'n' and not 'x' &&
+                    if (_condition.Chessboard[coords.Row, coords.Column].Status is not Status.Empty
+                            and not Status.EnPassant &&
                         _condition.Chessboard[coords.Row, coords.Column].White == _condition.WhiteOnTurn)
                     {
                         SelectPossibleMoves(coords);
@@ -498,11 +495,11 @@ public class ChessEngine : INotifyPropertyChanged
         
         // Deselection of taken piece.
         // Piece moves to a square with another piece, therefore attacking it.
-        if (_condition.Chessboard[to.Row, to.Column].Status is not 'n')
+        if (_condition.Chessboard[to.Row, to.Column].Status is not Status.Empty)
         {
             // It isn't en passant, or it is but a pawn is taken by a pawn.
-            if (_condition.Chessboard[to.Row, to.Column].Status is not 'x' ||
-                _condition.Chessboard[from.Row, from.Column].Status is 'p')
+            if (_condition.Chessboard[to.Row, to.Column].Status is not Status.EnPassant ||
+                _condition.Chessboard[from.Row, from.Column].Status is Status.Pawn)
             {
                 // Graphical representation of taken piece.
                 if (_condition.Chessboard[to.Row, to.Column].White)
@@ -536,7 +533,7 @@ public class ChessEngine : INotifyPropertyChanged
         // Pawn at the end of path.
         if (automaticPromotion is false)
         {
-            if (_condition.Chessboard[to.Row, to.Column].Status is 'p')
+            if (_condition.Chessboard[to.Row, to.Column].Status is Status.Pawn)
             {
                 if (to.Row is 7 or 0)
                 {
@@ -594,13 +591,13 @@ public class ChessEngine : INotifyPropertyChanged
                         if (_condition.ToString().Length < previousSituation.ToString().Length)
                         {
                             // Calculating white and black pieces in the current condition.
-                            var whiteCurrentCount = _condition.Chessboard.Cast<PieceChar>()
-                                .Where(pc => pc.Status is not 'n' && pc.Status is not 'x')
+                            var whiteCurrentCount = _condition.Chessboard.Cast<PieceId>()
+                                .Where(pc => pc.Status is not Status.Empty && pc.Status is not Status.EnPassant)
                                 .Count(pc => pc.White);
 
                             // Calculating white and black pieces in the previous condition.
-                            var whitePreviousCount = previousSituation.Chessboard.Cast<PieceChar>()
-                                .Where(pc => pc.Status is not 'n' && pc.Status is not 'x')
+                            var whitePreviousCount = previousSituation.Chessboard.Cast<PieceId>()
+                                .Where(pc => pc.Status is not Status.Empty && pc.Status is not Status.EnPassant)
                                 .Count(pc => pc.White);
 
                             // Removing taken piece from wrap panel of the taken piece.
@@ -675,21 +672,21 @@ public class ChessEngine : INotifyPropertyChanged
                         if (_condition.ToString().Length > futureSituation.ToString().Length)
                         {
                             // White pieces in current check condition.
-                            List<PieceChar> whiteCurrent = new();
+                            List<PieceId> whiteCurrent = new();
 
                             // Black pieces in current check condition.
-                            List<PieceChar> blackCurrent = new();
+                            List<PieceId> blackCurrent = new();
 
                             // White pieces in future check condition.
-                            List<PieceChar> whiteFuture = new();
+                            List<PieceId> whiteFuture = new();
 
                             // Black pieces in future check condition.
-                            List<PieceChar> blackFuture = new();
+                            List<PieceId> blackFuture = new();
 
                             // Loading white and black pieces in current condition.
-                            foreach (PieceChar pc in _condition.Chessboard)
+                            foreach (PieceId pc in _condition.Chessboard)
                             {
-                                if (pc.Status is 'n' or 'x')
+                                if (pc.Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
@@ -705,9 +702,9 @@ public class ChessEngine : INotifyPropertyChanged
                             }
 
                             // Loading white and black pieces in previous condition.
-                            foreach (PieceChar pc in futureSituation.Chessboard)
+                            foreach (PieceId pc in futureSituation.Chessboard)
                             {
-                                if (pc.Status is 'n' or 'x')
+                                if (pc.Status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
@@ -723,14 +720,14 @@ public class ChessEngine : INotifyPropertyChanged
                             }
 
                             WrapPanel taken;
-                            var takenPc = new PieceChar('n');
+                            var takenPc = new PieceId(Status.Empty);
 
                             // Finding taken piece.
                             if (whiteCurrent.Count > whiteFuture.Count)
                             {
                                 taken = _whiteLost;
 
-                                foreach (PieceChar pc in whiteCurrent)
+                                foreach (PieceId pc in whiteCurrent)
                                 {
                                     if (whiteFuture.Contains(pc))
                                     {
@@ -747,7 +744,7 @@ public class ChessEngine : INotifyPropertyChanged
                             {
                                 taken = _blackLost;
 
-                                foreach (PieceChar pc in blackCurrent)
+                                foreach (PieceId pc in blackCurrent)
                                 {
                                     if (blackFuture.Contains(pc))
                                         blackFuture.Remove(pc);
@@ -811,11 +808,11 @@ public class ChessEngine : INotifyPropertyChanged
             // Loading taken pieces into logical representation.
             var blackTakenPiece = _blackLost.Children.Cast<UIElement>()
                 .TakeWhile(uiElement => uiElement is not TextBlock)
-                .Select(uiElement => (PieceChar)(uiElement as Image)!.Tag).ToList();
+                .Select(uiElement => (PieceId)(uiElement as Image)!.Tag).ToList();
 
             var whiteTakenList = _whiteLost.Children.Cast<UIElement>()
                 .TakeWhile(uiElement => uiElement is not TextBlock)
-                .Select(uiElement => (PieceChar)(uiElement as Image)!.Tag).ToList();
+                .Select(uiElement => (PieceId)(uiElement as Image)!.Tag).ToList();
 
             try
             {
@@ -898,7 +895,7 @@ public class ChessEngine : INotifyPropertyChanged
         }
         else
         {
-            foreach (PieceChar pc in file.BlackTaken)
+            foreach (PieceId pc in file.BlackTaken)
             {
                 _blackLost.Children.Add(GeneratePieceImage(pc, true));
             }
@@ -912,7 +909,7 @@ public class ChessEngine : INotifyPropertyChanged
         }
         else
         {
-            foreach (PieceChar pc in file.WhiteTaken)
+            foreach (PieceId pc in file.WhiteTaken)
             {
                 _whiteLost.Children.Add(GeneratePieceImage(pc, true));
             }
@@ -975,7 +972,7 @@ public class ChessEngine : INotifyPropertyChanged
             for (var column = 0; column < 8; column++)
             {
                 // Free square.
-                if (_condition.Chessboard[row, column].Status is 'n' or 'x')
+                if (_condition.Chessboard[row, column].Status is Status.Empty or Status.EnPassant)
                 {
                     if ((_buttons[row, column].Content as Grid)!.Children[1] is not Image)
                     {
@@ -1186,7 +1183,7 @@ public class ChessEngine : INotifyPropertyChanged
     /// <param name="pc">Based on square it generates the respective image of the piece</param>
     /// <param name="forWrapPanel">Whether to generate the image for the wrap panel of lost pieces</param>
     /// <returns></returns>
-    private Image GeneratePieceImage(PieceChar pc, bool forWrapPanel = false)
+    private Image GeneratePieceImage(PieceId pc, bool forWrapPanel = false)
     {
         var image = new Image
         {
@@ -1233,7 +1230,7 @@ public class ChessEngine : INotifyPropertyChanged
         _turnTask = Task.Run(() =>
             {
                 var difficulty = _condition.WhiteOnTurn ? Settings.WhiteDifficulty : Settings.BlackDifficulty;
-                var halfTurn = _emulator.BestHalfTurn(_calculatedCondition, _condition, difficulty);
+                var halfTurn = Emulator.BestHalfTurn(_calculatedCondition, _condition, difficulty);
 
                 _timerUpdateUi.Stop();
                 TimerUpdateUi_Tick(null, null);

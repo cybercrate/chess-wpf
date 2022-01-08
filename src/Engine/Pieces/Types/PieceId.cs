@@ -1,14 +1,14 @@
-﻿namespace Engine.Pieces.Base;
+﻿namespace Engine.Pieces.Types;
 
 /// <summary>
 /// Piece represented with a char and boolean (color).
 /// </summary>
-public struct PieceChar
+public struct PieceId
 {
     /// <summary>
-    /// n - nothing, x - en passant, k - king, d - queen, v - rook, s - bishop, j - knight, p - pawn.
+    /// 
     /// </summary>
-    public char Status { get; set; }
+    public Status Status { get; set; }
     
     /// <summary>
     /// true - white piece, false - black piece.
@@ -18,10 +18,9 @@ public struct PieceChar
     /// <summary>
     /// Square constructor.
     /// </summary>
-    /// <param name="status">
-    /// n - nothing, x - en passant, k - king, d - queen, v - rook, s - bishop, j - knight, p - pawn.</param>
+    /// <param name="status"></param>
     /// <param name="white">Piece color.</param>
-    public PieceChar(char status, bool white = true)
+    public PieceId(Status status, bool white = true)
     {
         Status = status;
         White = white;

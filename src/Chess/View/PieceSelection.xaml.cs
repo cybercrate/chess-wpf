@@ -1,8 +1,8 @@
-﻿using Engine.Pieces.Base;
-using Engine.ResourceManagement;
+﻿using Engine.ResourceManagement;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Engine.Pieces.Types;
 
 namespace Chess.View;
 
@@ -11,7 +11,7 @@ namespace Chess.View;
 /// </summary>
 public partial class PieceSelection
 {
-    public char Status { get; private set; }
+    public Status Status { get; private set; }
 
     public PieceSelection(double chessboardWidth, bool white)
     {
@@ -33,19 +33,19 @@ public partial class PieceSelection
             switch(i)
             {
                 case 0:
-                    image.Source = ImageLoader.GetImage(white ? ChessmanType.RookWhite : ChessmanType.RookBlack);
+                    image.Source = ImageLoader.GetImage(white ? Chessman.RookWhite : Chessman.RookBlack);
                     RookButton.Content = image;
                     break;
                 case 1:
-                    image.Source = ImageLoader.GetImage(white ? ChessmanType.KnightWhite : ChessmanType.KnightBlack);
+                    image.Source = ImageLoader.GetImage(white ? Chessman.KnightWhite : Chessman.KnightBlack);
                     KnightButton.Content = image;
                     break;
                 case 2:
-                    image.Source = ImageLoader.GetImage(white ? ChessmanType.BishopWhite : ChessmanType.BishopBlack);
+                    image.Source = ImageLoader.GetImage(white ? Chessman.BishopWhite : Chessman.BishopBlack);
                     BishopButton.Content = image;
                     break;
                 case 3:
-                    image.Source = ImageLoader.GetImage(white ? ChessmanType.QueenWhite : ChessmanType.QueenBlack);
+                    image.Source = ImageLoader.GetImage(white ? Chessman.QueenWhite : Chessman.QueenBlack);
                     QueenButton.Content = image;
                     break;
             }
@@ -58,19 +58,19 @@ public partial class PieceSelection
         {
             if (Equals(e.Source, RookButton))
             {
-                Status = 'v';
+                Status = Status.Rook;
             }
             else if (Equals(e.Source, KnightButton))
             {
-                Status = 'j';
+                Status = Status.Knight;
             }
             else if (Equals(e.Source, BishopButton))
             {
-                Status = 's';
+                Status = Status.Bishop;
             }
             else if (Equals(e.Source, QueenButton))
             {
-                Status = 'd';
+                Status = Status.Queen;
             }
                 
             Close();

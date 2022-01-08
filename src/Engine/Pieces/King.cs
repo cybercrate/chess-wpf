@@ -1,5 +1,6 @@
 ﻿using Engine.Conditions;
 using Engine.Pieces.Base;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
@@ -29,12 +30,12 @@ internal class King : Piece
         }
 
         // Creating currently processed coords.
-        Coords pc = new(coords.Row, (sbyte)(coords.Column - 1));
+        Coords pc = new(coords.Row, coords.Column - 1);
 
         // Left.
         if (coords.Column > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -45,11 +46,11 @@ internal class King : Piece
         }
 
         // Left up.
-        pc = new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column - 1));
+        pc = new Coords(coords.Row - 1, coords.Column - 1);
 
         if (coords.Column > 0 && coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -60,11 +61,11 @@ internal class King : Piece
         }
 
         // Up.
-        pc = new Coords((sbyte)(coords.Row - 1), coords.Column);
+        pc = new Coords(coords.Row - 1, coords.Column);
 
         if (coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -75,11 +76,11 @@ internal class King : Piece
         }
 
         // Right up.
-        pc = new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column + 1));
+        pc = new Coords(coords.Row - 1, coords.Column + 1);
 
         if (coords.Column < 7 && coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -90,11 +91,11 @@ internal class King : Piece
         }
 
         // Right.
-        pc = new Coords(coords.Row, (sbyte)(coords.Column + 1));
+        pc = new Coords(coords.Row, coords.Column + 1);
 
         if (coords.Column < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -105,11 +106,11 @@ internal class King : Piece
         }
 
         // Right down.
-        pc = new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column + 1));
+        pc = new Coords(coords.Row + 1, coords.Column + 1);
 
         if (coords.Column < 7 && coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -120,11 +121,11 @@ internal class King : Piece
         }
 
         // Down.
-        pc = new Coords((sbyte)(coords.Row + 1), coords.Column);
+        pc = new Coords(coords.Row + 1, coords.Column);
 
         if (coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -135,11 +136,11 @@ internal class King : Piece
         }
 
         // Left down.
-        pc = new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column - 1));
+        pc = new Coords(coords.Row + 1, coords.Column - 1);
 
         if (coords.Column > 0 && coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' ||
+            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
                 condition.Chessboard[pc.Row, pc.Column].White != White)
             {
                 if (PossibleEnemyAttacks.Contains(pc) is false)
@@ -160,13 +161,14 @@ internal class King : Piece
                     if (condition.WhiteSmallRookMoved is false)
                     {
                         // Is Col + 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column + 1))) is false)
+                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is Status.Empty
+                                or Status.EnPassant &&
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1)) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte)(coords.Column + 2));
-                            
+                            pc = new Coords(coords.Row, coords.Column + 2);
+
                             // Is Col + 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
+                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
                                 PossibleEnemyAttacks.Contains(pc) is false)
                             {
                                 possibleMoves.Add(pc);
@@ -178,17 +180,19 @@ internal class King : Piece
                     if (condition.WhiteLargeRookMoved is false)
                     {
                         // Is Col - 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column - 1))) is false)
+                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is Status.Empty
+                                or Status.EnPassant &&
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1)) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte)(coords.Column - 2));
-                            
+                            pc = new Coords(coords.Row, coords.Column - 2);
+
                             // Is Col - 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
+                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
                                 PossibleEnemyAttacks.Contains(pc) is false)
                             {
                                 // Is Col - 3 square free?
-                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is 'n' or 'x')
+                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is Status.Empty
+                                    or Status.EnPassant)
                                 {
                                     possibleMoves.Add(pc);
                                 }
@@ -205,13 +209,14 @@ internal class King : Piece
                     if (condition.BlackSmallRookMoved is false)
                     {
                         // Is Col +1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column + 1))) is false)
+                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is Status.Empty
+                                or Status.EnPassant &&
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1)) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte)(coords.Column + 2));
-                            
+                            pc = new Coords(coords.Row, coords.Column + 2);
+
                             // Is Col + 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
+                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
                                 PossibleEnemyAttacks.Contains(pc) is false)
                             {
                                 possibleMoves.Add(pc);
@@ -223,17 +228,19 @@ internal class King : Piece
                     if (condition.BlackLargeRookMoved is false)
                     {
                         // Is Col - 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is 'n' or 'x' &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, (sbyte)(coords.Column - 1))) is false)
+                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is Status.Empty
+                                or Status.EnPassant &&
+                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1)) is false)
                         {
-                            pc = new Coords(coords.Row, (sbyte)(coords.Column - 2));
-                            
+                            pc = new Coords(coords.Row, coords.Column - 2);
+
                             // Is Col - 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is 'n' or 'x' &&
+                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
                                 PossibleEnemyAttacks.Contains(pc) is false)
                             {
                                 // Is Col - 3 square free?
-                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is 'n' or 'x')
+                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is Status.Empty
+                                    or Status.EnPassant)
                                 {
                                     possibleMoves.Add(pc);
                                 }
@@ -269,49 +276,49 @@ internal class King : Piece
         // Left.
         if (coords.Column > 0)
         {
-            possibleAttacks.Add(new Coords(coords.Row, (sbyte)(coords.Column - 1)));
+            possibleAttacks.Add(new Coords(coords.Row, coords.Column - 1));
         }
 
         // Left up.
         if (coords.Column > 0 && coords.Row > 0)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column - 1)));
+            possibleAttacks.Add(new Coords(coords.Row - 1, coords.Column - 1));
         }
 
         // Up.
         if (coords.Row > 0)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), coords.Column));
+            possibleAttacks.Add(new Coords(coords.Row - 1, coords.Column));
         }
 
         // Right up.
         if (coords.Column < 7 && coords.Row > 0)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row - 1), (sbyte)(coords.Column + 1)));
+            possibleAttacks.Add(new Coords(coords.Row - 1, coords.Column + 1));
         }
 
         // Right.
         if (coords.Column < 7)
         {
-            possibleAttacks.Add(new Coords(coords.Row, (sbyte)(coords.Column + 1)));
+            possibleAttacks.Add(new Coords(coords.Row, coords.Column + 1));
         }
 
         // Right down.
         if (coords.Column < 7 && coords.Row < 7)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column + 1)));
+            possibleAttacks.Add(new Coords(coords.Row + 1, coords.Column + 1));
         }
 
         // Down.
         if (coords.Row < 7)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 1), coords.Column));
+            possibleAttacks.Add(new Coords(coords.Row + 1, coords.Column));
         }
 
         // Left down.
         if (coords.Column > 0 && coords.Row < 7)
         {
-            possibleAttacks.Add(new Coords((sbyte)(coords.Row + 1), (sbyte)(coords.Column - 1)));
+            possibleAttacks.Add(new Coords(coords.Row + 1, coords.Column - 1));
         }
 
         PossibleAttacks = possibleAttacks.ToArray();

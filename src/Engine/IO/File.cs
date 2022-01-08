@@ -1,7 +1,7 @@
 ﻿using Engine.Conditions;
-using Engine.Pieces.Base;
 using System.IO;
 using System.Text;
+using Engine.Pieces.Types;
 
 namespace Engine.IO;
 
@@ -12,21 +12,21 @@ internal class File
 {
     public Condition Condition { get; private set; }
         
-    public List<PieceChar> BlackTaken { get; }
+    public List<PieceId> BlackTaken { get; }
         
-    public List<PieceChar> WhiteTaken { get; }
+    public List<PieceId> WhiteTaken { get; }
         
     public Stack<Condition> History { get; }
         
     public File()
     {
         Condition = new Condition();
-        BlackTaken = new List<PieceChar>();
-        WhiteTaken = new List<PieceChar>();
+        BlackTaken = new List<PieceId>();
+        WhiteTaken = new List<PieceId>();
         History = new Stack<Condition>();
     }
 
-    public File(Condition condition, List<PieceChar> blackTaken, List<PieceChar> whiteTaken, Stack<Condition> history)
+    public File(Condition condition, List<PieceId> blackTaken, List<PieceId> whiteTaken, Stack<Condition> history)
     {
         Condition = condition;
         BlackTaken = blackTaken;
@@ -44,27 +44,24 @@ internal class File
             throw new Exception("Missing data.");
         }
 
-        // Creating file.
-        var fs = System.IO.File.Create(fileName);
-
         // Writing data into the file.
-        using StreamWriter sw = new(fs);
+        using StreamWriter sw = new(System.IO.File.Create(fileName));
         
         WriteBasicData(sw, Condition);
         
         // Writing taken pieces into 11th and 12th line.
-        foreach (PieceChar pc in BlackTaken)
+        foreach (PieceId pieceId in BlackTaken)
         {
-            sw.Write(pc.Status);
-            sw.Write('c');
+            sw.Write(ToChar(pieceId.Status));
+            sw.Write(Token.Black);
         }
         
         sw.WriteLine();
         
-        foreach (PieceChar pc in WhiteTaken)
+        foreach (PieceId pieceId in WhiteTaken)
         {
-            sw.Write(pc.Status);
-            sw.Write('b');
+            sw.Write(ToChar(pieceId.Status));
+            sw.Write(Token.White);
         }
         
         sw.WriteLine();
@@ -98,7 +95,7 @@ internal class File
         {
             for (var charNumber = 0; charNumber < lineText.Length; charNumber += 2)
             {
-                BlackTaken.Add(new PieceChar(lineText[charNumber], false));
+                BlackTaken.Add(new PieceId(ToStatus(lineText[charNumber]), false));
             }
         }
 
@@ -108,7 +105,7 @@ internal class File
         {
             for (var charNumber = 0; charNumber < lineText.Length; charNumber += 2)
             {
-                WhiteTaken.Add(new PieceChar(lineText[charNumber], true));
+                WhiteTaken.Add(new PieceId(ToStatus(lineText[charNumber])));
             }
         }
 
@@ -136,24 +133,25 @@ internal class File
     /// <summary>
     /// Writing basic data (pieces positions and other parameters) into 9 lines.
     /// </summary>
-    private static void WriteBasicData(TextWriter sw, Condition condition)
+    private static void WriteBasicData(TextWriter tw, Condition condition)
     {
         // Writing pieces positions into 2nd through 9th line.
         for (var row = 0; row < 8; row++)
         {
             for (var column = 0; column < 8; column++)
             {
-                if (condition.Chessboard[row, column].Status is 'n')
+                if (condition.Chessboard[row, column].Status is Status.Empty)
                 {
-                    sw.Write(condition.Chessboard[row, column].Status + " ");
+                    tw.Write($"{Token.Empty}]");
                 }
                 else
                 {
-                    sw.Write(condition.Chessboard[row, column].Status);
-                    sw.Write(condition.Chessboard[row, column].White ? 'b' : 'c');
+                    tw.Write(ToChar(condition.Chessboard[row, column].Status));
+                    tw.Write(condition.Chessboard[row, column].White ? Token.White : Token.Black);
                 }
             }
-            sw.WriteLine();
+            
+            tw.WriteLine();
         }
 
         // Writing other condition parameters into 10th line.
@@ -167,7 +165,7 @@ internal class File
         sb.Append(condition.BlackLargeRookMoved.ToString()[0]);
         sb.Append(condition.Draw50);
 
-        sw.WriteLine(sb.ToString());
+        tw.WriteLine(sb.ToString());
     }
     
     /// <summary>
@@ -186,21 +184,21 @@ internal class File
                 c = (char)sr.Read();
                 
                 // If there is no other char to read, sr.Read() returns '\uffff'.
-                if (c is '\uffff')
+                if (c is Token.Invalid)
                 {
                     return null;
                 }
                 
-                condition.Chessboard[row, column] = new PieceChar(c);
+                condition.Chessboard[row, column] = new PieceId(ToStatus(c));
                 
-                if (c is not 'n')
+                if (c is not Token.Empty)
                 {
                     c = (char)sr.Read();
-                    condition.Chessboard[row, column].White = c is 'b';
+                    condition.Chessboard[row, column].White = c is Token.White;
                 }
                 else
                 {
-                    // Reads the empty space behind the empty square ('n').
+                    // Reads the empty space behind the empty square.
                     sr.Read();
                 }
             }
@@ -213,37 +211,35 @@ internal class File
         }
 
         // Loading other parameters.
-        // White on turn.
         c = (char)sr.Read();
-        condition.WhiteOnTurn = c is 'T';
-        
-        // Other booleans.
-        c = (char)sr.Read();
-        condition.WhiteKingMoved = c is 'T';
+        condition.WhiteOnTurn = c is Token.Result;
         
         c = (char)sr.Read();
-        condition.WhiteSmallRookMoved = c is 'T';
+        condition.WhiteKingMoved = c is Token.Result;
         
         c = (char)sr.Read();
-        condition.WhiteLargeRookMoved = c is 'T';
+        condition.WhiteSmallRookMoved = c is Token.Result;
         
         c = (char)sr.Read();
-        condition.BlackKingMoved = c is 'T';
+        condition.WhiteLargeRookMoved = c is Token.Result;
         
         c = (char)sr.Read();
-        condition.BlackSmallRookMoved = c is 'T';
+        condition.BlackKingMoved = c is Token.Result;
         
         c = (char)sr.Read();
-        condition.BlackLargeRookMoved = c is 'T';
+        condition.BlackSmallRookMoved = c is Token.Result;
+        
+        c = (char)sr.Read();
+        condition.BlackLargeRookMoved = c is Token.Result;
         
         c = (char)sr.Read();
         var c2 = (char)sr.Read();
         
-        if (c2 is not '\r')
+        if (c2 is not Token.Return)
         {
             var c3 = (char)sr.Read();
             
-            if (c3 is not '\r')
+            if (c3 is not Token.Return)
             {
                 condition.Draw50 = int.Parse($"{c.ToString()}{c2.ToString()}{c3.ToString()}");
                 
@@ -265,4 +261,30 @@ internal class File
 
         return condition;
     }
+
+    private static char ToChar(Status status) => status switch
+    {
+        Status.Empty => Token.Empty,
+        Status.EnPassant => Token.EnPassant,
+        Status.King => Token.King,
+        Status.Queen => Token.Queen,
+        Status.Rook => Token.Rook,
+        Status.Bishop => Token.Bishop,
+        Status.Knight => Token.Knight,
+        Status.Pawn => Token.Pawn,
+        _ => throw new Exception("Unknown status.")
+    };
+
+    private static Status ToStatus(char symbol) => symbol switch
+    {
+        Token.Empty => Status.Empty,
+        Token.EnPassant => Status.EnPassant,
+        Token.King => Status.King,
+        Token.Queen => Status.Queen,
+        Token.Rook => Status.Rook,
+        Token.Bishop => Status.Bishop,
+        Token.Knight => Status.Knight,
+        Token.Pawn => Status.Pawn,
+        _ => throw new Exception("Missing data.")
+    };
 }

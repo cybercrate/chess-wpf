@@ -1,5 +1,6 @@
 ﻿using Engine.Pieces;
 using Engine.Pieces.Base;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Conditions;
@@ -52,15 +53,17 @@ internal class CalculatedCondition
                 for (var col = 0; col < 8; col++)
                 {
                     IPiece piece;
+                    
                     var status = condition.Chessboard[row, col].Status;
+                    var white = condition.Chessboard[row, col].White;
 
-                    if (condition.Chessboard[row, col].White != WhiteOnTurn || status is 'n' or 'x')
+                    if (white != WhiteOnTurn || status is Status.Empty or Status.EnPassant)
                     {
                         continue;
                     }
                     
                     // Getting type of piece and adding it into dictionary.
-                    if (status is 'k')
+                    if (status is Status.King)
                     {
                         piece = new King(condition.Chessboard[row, col].White);
                         kingCoords = new Coords((sbyte)row, (sbyte)col);
@@ -69,16 +72,16 @@ internal class CalculatedCondition
                     {
                         piece = status switch
                         {
-                            'p' => new Pawn(condition.Chessboard[row, col].White),
-                            'v' => new Rook(condition.Chessboard[row, col].White),
-                            'j' => new Knight(condition.Chessboard[row, col].White),
-                            's' => new Bishop(condition.Chessboard[row, col].White),
-                            'd' => new Queen(condition.Chessboard[row, col].White),
+                            Status.Pawn => new Pawn(white),
+                            Status.Rook => new Rook(white),
+                            Status.Knight => new Knight(white),
+                            Status.Bishop => new Bishop(white),
+                            Status.Queen => new Queen(white),
                             _ => throw new Exception("Unexpected status.")
                         };
                     }
                     
-                    PiecesOnTurn.Add(new Coords((sbyte)row, (sbyte)col), piece);
+                    PiecesOnTurn.Add(new Coords(row, col), piece);
                 }
             }
         }
@@ -92,16 +95,18 @@ internal class CalculatedCondition
                 for (sbyte sl = 0; sl < 8; sl++)
                 {
                     IPiece piece;
+
                     var status = condition.Chessboard[ra, sl].Status;
+                    var white = condition.Chessboard[ra, sl].White;
 
                     switch (status)
                     {
                         // Getting type of piece and recalculating.
-                        case 'n' or 'x':
+                        case Status.Empty or Status.EnPassant:
                             continue;
-                        case 'k':
+                        case Status.King:
                         {
-                            piece = new King(condition.Chessboard[ra, sl].White);
+                            piece = new King(white);
                         
                             if (piece.White == WhiteOnTurn)
                             {
@@ -114,11 +119,11 @@ internal class CalculatedCondition
                         {
                             piece = status switch
                             {
-                                'p' => new Pawn(condition.Chessboard[ra, sl].White),
-                                'v' => new Rook(condition.Chessboard[ra, sl].White),
-                                'j' => new Knight(condition.Chessboard[ra, sl].White),
-                                's' => new Bishop(condition.Chessboard[ra, sl].White),
-                                'd' => new Queen(condition.Chessboard[ra, sl].White),
+                                Status.Pawn => new Pawn(white),
+                                Status.Rook => new Rook(white),
+                                Status.Knight => new Knight(white),
+                                Status.Bishop => new Bishop(white),
+                                Status.Queen => new Queen(white),
                                 _ => throw new Exception("Unexpected status.")
                             };
 
@@ -218,8 +223,9 @@ internal class CalculatedCondition
             for (sbyte col = 0; col < 8; col++)
             {
                 var status = condition.Chessboard[row, col].Status;
+                var white = condition.Chessboard[row, col].White;
 
-                if (status is 'n' or 'x')
+                if (status is Status.Empty or Status.EnPassant)
                 {
                     continue;
                 }
@@ -227,16 +233,16 @@ internal class CalculatedCondition
                 // Getting piece type and calculations.
                 IPiece piece = status switch
                 {
-                    'p' => new Pawn(condition.Chessboard[row, col].White),
-                    'v' => new Rook(condition.Chessboard[row, col].White),
-                    'j' => new Knight(condition.Chessboard[row, col].White),
-                    's' => new Bishop(condition.Chessboard[row, col].White),
-                    'd' => new Queen(condition.Chessboard[row, col].White),
-                    'k' => new King(condition.Chessboard[row, col].White),
+                    Status.Pawn => new Pawn(white),
+                    Status.Rook => new Rook(white),
+                    Status.Knight => new Knight(white),
+                    Status.Bishop => new Bishop(white),
+                    Status.Queen => new Queen(white),
+                    Status.King => new King(white),
                     _ => throw new Exception("Unexpected status.")
                 };
 
-                if (condition.Chessboard[row, col].White == condition.WhiteOnTurn)
+                if (white == condition.WhiteOnTurn)
                 {
                     continue;
                 }
