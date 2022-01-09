@@ -14,7 +14,7 @@ internal class Bishop: MovablePiece
     public override void UpdatePossibleMoves(Condition condition, bool check, Coords currentCoords)
     {
         List<Coords> possibleMoves = new();
-        
+
         if (condition.Draw50 > 99)
         {
             PossibleMoves = possibleMoves.ToArray();
@@ -23,26 +23,33 @@ internal class Bishop: MovablePiece
         
         // For loop columns counter, rows counter.
         var row = currentCoords.Row;
-        sbyte col;
+        sbyte column;
+        
+        Status status;
+        bool white;
         
         // Left top side.
-        for (col = (sbyte)(currentCoords.Column - 1); col >= 0; col--)
+        for (column = (sbyte)(currentCoords.Column - 1); column >= 0; column--)
         {
             row--;
             
             if (row >= 0)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleMoves.Add(new Coords(row, col));
+                    possibleMoves.Add(new Coords(row, column));
                 }
                 else // Square has a piece.
                 {
+                    white = condition.Chessboard[row, column].White;
+                    
                     // Piece is enemy.
-                    if (condition.Chessboard[row, col].White != White) 
+                    if (white != White) 
                     {
-                        possibleMoves.Add(new Coords(row, col));
+                        possibleMoves.Add(new Coords(row, column));
                     }
                     
                     break;
@@ -57,24 +64,28 @@ internal class Bishop: MovablePiece
         // Right top side.
         row = currentCoords.Row;
         
-        for (col = (sbyte)(currentCoords.Column + 1); col < 8; col++)
+        for (column = (sbyte)(currentCoords.Column + 1); column < 8; column++)
         {
             row--;
             
             if (row >= 0)
             {
+                status = condition.Chessboard[row, column].Status;
+
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleMoves.Add(new Coords(row, col));
+                    possibleMoves.Add(new Coords(row, column));
                 }
                 // Square has a piece.
                 else 
                 {
+                    white = condition.Chessboard[row, column].White;
+                    
                     // Piece is enemy.
-                    if (condition.Chessboard[row, col].White != White)
+                    if (white != White)
                     {
-                        possibleMoves.Add(new Coords(row, col));
+                        possibleMoves.Add(new Coords(row, column));
                     }
                     break;
                 }
@@ -88,25 +99,30 @@ internal class Bishop: MovablePiece
         // Left bottom side.
         row = currentCoords.Row;
         
-        for (col = (sbyte)(currentCoords.Column - 1); col >= 0; col--)
+        for (column = (sbyte)(currentCoords.Column - 1); column >= 0; column--)
         {
             row++;
             
             if (row < 8)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleMoves.Add(new Coords(row, col));
+                    possibleMoves.Add(new Coords(row, column));
                 }
                 // Square has a piece.
                 else
                 {
+                    white = condition.Chessboard[row, column].White;
+                    
                     // Piece is enemy.
-                    if (condition.Chessboard[row, col].White != White) 
+                    if (white != White) 
                     {
-                        possibleMoves.Add(new Coords(row, col));
+                        possibleMoves.Add(new Coords(row, column));
                     }
+                    
                     break;
                 }
             }
@@ -119,24 +135,28 @@ internal class Bishop: MovablePiece
         // Right bottom side.
         row = currentCoords.Row;
         
-        for (col = (sbyte)(currentCoords.Column + 1); col < 8; col++)
+        for (column = (sbyte)(currentCoords.Column + 1); column < 8; column++)
         {
             row++;
             
             if (row < 8)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleMoves.Add(new Coords(row, col));
+                    possibleMoves.Add(new Coords(row, column));
                 }
                 // Square has a piece.
-                else 
+                else
                 {
+                    white = condition.Chessboard[row, column].White;
+                    
                     // Piece is enemy.
-                    if (condition.Chessboard[row, col].White != White) 
+                    if (white != White) 
                     {
-                        possibleMoves.Add(new Coords(row, col));
+                        possibleMoves.Add(new Coords(row, column));
                     }
                     
                     break;
@@ -154,7 +174,9 @@ internal class Bishop: MovablePiece
             // only check preventing moves are legal.
             for (var i = possibleMoves.Count - 1; i >= 0; i--)
             {
-                if (ChessEngine.ValidMoveDuringCheck(currentCoords, possibleMoves[i], condition) is false)
+                var validMoveDuring = ChessEngine.ValidMoveDuringCheck(currentCoords, possibleMoves[i], condition);
+                
+                if (validMoveDuring is false)
                 {
                     possibleMoves.RemoveAt(i);
                 }
@@ -170,51 +192,63 @@ internal class Bishop: MovablePiece
         
         // For loop columns counter, rows counter.
         var row = coords.Row;
-        sbyte col;
+        sbyte column;
+
+        Status status;
+        bool white;
         
         // Left top side.
-        for (col = (sbyte)(coords.Column - 1); col >= 0; col--)
+        for (column = (sbyte)(coords.Column - 1); column >= 0; column--)
         {
             row--;
             
             if (row >= 0)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
                 }
                 // Square has a piece.
                 else 
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
+
+                    white = condition.Chessboard[row, column].White;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (condition.Chessboard[row, col].White != White)
+                    if (white != White)
                     {
                         // Creating new variables for keeping the piece variables
-                        var row2 = row;
-                        sbyte col2;
+                        var innerRow = row;
+                        sbyte innerColumn;
                         
                         // Continuing in row after finding the 2nd piece
-                        for (col2 = (sbyte)(col - 1); col2 >= 0; col2--)
+                        for (innerColumn = (sbyte)(column - 1); innerColumn >= 0; innerColumn--)
                         {
-                            row2--;
-                            if (row2 >= 0)
+                            innerRow--;
+                            
+                            if (innerRow >= 0)
                             {
+                                status = condition.Chessboard[innerRow, innerColumn].Status;
+                                
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
-                                
+
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is Status.King)
+                                if (status is Status.King)
                                 {
+                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    
                                     // Enemy king..
-                                    if (condition.Chessboard[row2, col2].White != White)
+                                    if (white != White)
                                     {
-                                        PieceProtectingKingCoords = new Coords(row, col);
+                                        PieceProtectingKingCoords = new Coords(row, column);
                                     }
                                 }
                                 else
@@ -241,46 +275,55 @@ internal class Bishop: MovablePiece
         // Right top side.
         row = coords.Row;
         
-        for (col = (sbyte)(coords.Column + 1); col < 8; col++)
+        for (column = (sbyte)(coords.Column + 1); column < 8; column++)
         {
             row--;
             if (row >= 0)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
                 }
                 else // Square has a piece.
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
+
+                    white = condition.Chessboard[row, column].White;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (condition.Chessboard[row, col].White != White)
+                    if (white != White)
                     {
                         // Creating new variables for keeping the piece variables.
-                        var row2 = row;
-                        sbyte col2;
+                        var innerRow = row;
+                        sbyte innerColumn;
                         
                         // Continuing in row after finding the 2nd piece.
-                        for (col2 = (sbyte)(col + 1); col2 < 8; col2++)
+                        for (innerColumn = (sbyte)(column + 1); innerColumn < 8; innerColumn++)
                         {
-                            row2--;
-                            if (row2 >= 0)
+                            innerRow--;
+                            
+                            if (innerRow >= 0)
                             {
+                                status = condition.Chessboard[innerRow, innerColumn].Status;
+                                
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
-                                
+
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is Status.King)
+                                if (status is Status.King)
                                 {
+                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    
                                     // Enemy king.
-                                    if (condition.Chessboard[row2, col2].White != White)
+                                    if (white != White)
                                     {
-                                        PieceProtectingKingCoords = new Coords(row, col);
+                                        PieceProtectingKingCoords = new Coords(row, column);
                                     }
                                 }
                                 else
@@ -307,48 +350,56 @@ internal class Bishop: MovablePiece
         // Left bottom side.
         row = coords.Row;
         
-        for (col = (sbyte)(coords.Column - 1); col >= 0; col--)
+        for (column = (sbyte)(coords.Column - 1); column >= 0; column--)
         {
             row++;
             if (row < 8)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
                 }
                 // Square has a piece.
                 else 
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
+
+                    white = condition.Chessboard[row, column].White;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (condition.Chessboard[row, col].White != White)
+                    if (white != White)
                     {
                         // Creating new variables for keeping the piece variables.
-                        var row2 = row;
-                        sbyte col2;
+                        var innerRow = row;
+                        sbyte innerColumn;
                         
                         // Continuing in row after finding the 2nd piece.
-                        for (col2 = (sbyte)(col - 1); col2 >= 0; col2--)
+                        for (innerColumn = (sbyte)(column - 1); innerColumn >= 0; innerColumn--)
                         {
-                            row2++;
+                            innerRow++;
                             
-                            if (row2 < 8)
+                            if (innerRow < 8)
                             {
+                                status = condition.Chessboard[innerRow, innerColumn].Status;
+                                
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
-                                
+
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is Status.King)
+                                if (status is Status.King)
                                 {
+                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    
                                     // Enemy king.
-                                    if (condition.Chessboard[row2, col2].White != White)
+                                    if (white != White)
                                     {
-                                        PieceProtectingKingCoords = new Coords(row, col);
+                                        PieceProtectingKingCoords = new Coords(row, column);
                                     }
                                 }
                                 else
@@ -372,50 +423,59 @@ internal class Bishop: MovablePiece
             }
         }
         
-        // Right bottom side.
         row = coords.Row;
-        for (col = (sbyte)(coords.Column + 1); col < 8; col++)
+        
+        // Right bottom side.
+        for (column = (sbyte)(coords.Column + 1); column < 8; column++)
         {
             row++;
             if (row < 8)
             {
+                status = condition.Chessboard[row, column].Status;
+                
                 // If the square is empty.
-                if (condition.Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (status is Status.Empty or Status.EnPassant)
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
                 }
                 // Square has a piece.
                 else 
                 {
-                    possibleAttacks.Add(new Coords(row, col));
+                    possibleAttacks.Add(new Coords(row, column));
+
+                    white = condition.Chessboard[row, column].White;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (condition.Chessboard[row, col].White != White)
+                    if (white != White)
                     {
                         // Creating new variables for keeping the piece variables.
-                        var row2 = row;
-                        sbyte col2;
+                        var innerRow = row;
+                        sbyte innerColumn;
                         
                         // Continuing in row after finding the 2nd piece.
-                        for (col2 = (sbyte)(col + 1); col2 < 8; col2++)
+                        for (innerColumn = (sbyte)(column + 1); innerColumn < 8; innerColumn++)
                         {
-                            row2++;
+                            innerRow++;
                             
-                            if (row2 < 8)
+                            if (innerRow < 8)
                             {
+                                status = condition.Chessboard[innerRow, innerColumn].Status;
+                                
                                 // Piece found.
-                                if (condition.Chessboard[row2, col2].Status is Status.Empty or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
                                     continue;
                                 }
-                                
+
                                 // King found.
-                                if (condition.Chessboard[row2, col2].Status is Status.King)
+                                if (status is Status.King)
                                 {
+                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    
                                     // Enemy king.
-                                    if (condition.Chessboard[row2, col2].White != White)
+                                    if (white != White)
                                     {
-                                        PieceProtectingKingCoords = new Coords(row, col);
+                                        PieceProtectingKingCoords = new Coords(row, column);
                                     }
                                 }
                                 else

@@ -19,6 +19,22 @@ public static class ImageLoader
     private const string QueenBlack = "QueenBlack.png";
     private const string KingWhite = "KingWhite.png";
     private const string KingBlack = "KingBlack.png";
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static BitmapImage GetImage(Chessman type) => new(new Uri(GeneratePath(type), UriKind.Relative));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="status"></param>
+    /// <param name="white"></param>
+    /// <returns></returns>
+    public static BitmapImage GetImage(Status status, bool white) =>
+        new(new Uri(GeneratePath(status, white), UriKind.Relative));
 
     /// <summary>
     /// 
@@ -70,20 +86,4 @@ public static class ImageLoader
 
         return $"/{RelativePath}/{imageSource}";
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static BitmapImage GetImage(Chessman type) => new(new Uri(GeneratePath(type), UriKind.Relative));
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="status"></param>
-    /// <param name="white"></param>
-    /// <returns></returns>
-    public static BitmapImage GetImage(Status status, bool white) =>
-        new(new Uri(GeneratePath(status, white), UriKind.Relative));
 }

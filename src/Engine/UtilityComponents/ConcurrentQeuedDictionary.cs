@@ -2,8 +2,7 @@
 
 namespace Engine.UtilityComponents;
 
-public class ConcurrentQueuedDictionary<TKey, TValue>
-    where TKey : notnull
+public class ConcurrentQueuedDictionary<TKey, TValue> where TKey : notnull
 {
     private Task _clearingTask = Task.Delay(0);
     private readonly ConcurrentDictionary<TKey, TValue> _dictionary;
@@ -25,10 +24,7 @@ public class ConcurrentQueuedDictionary<TKey, TValue>
         }
     }
 
-    public bool TryGetValue(TKey key, out TValue? value)
-    {
-        return _dictionary.TryGetValue(key, out value);
-    }
+    public bool TryGetValue(TKey key, out TValue? value) => _dictionary.TryGetValue(key, out value);
 
     public void ClearTrash()
     {

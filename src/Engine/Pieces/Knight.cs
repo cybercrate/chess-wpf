@@ -24,14 +24,18 @@ internal class Knight : Piece
         // Processed coordinates.
         Coords processedCoords;
 
+        Status status;
+        bool white;
+
         // Top side.
         if (coords.Row > 1 && coords.Column > 0)
         {
             processedCoords = new Coords(coords.Row - 2, coords.Column - 1);
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -40,10 +44,11 @@ internal class Knight : Piece
         if (coords.Row > 1 && coords.Column < 7)
         {
             processedCoords = new Coords(coords.Row - 2, coords.Column + 1);
+
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -53,10 +58,11 @@ internal class Knight : Piece
         if (coords.Row < 6 && coords.Column > 0)
         {
             processedCoords = new Coords(coords.Row + 2, coords.Column - 1);
+
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -65,10 +71,11 @@ internal class Knight : Piece
         if (coords.Row < 6 && coords.Column < 7)
         {
             processedCoords = new Coords(coords.Row + 2, coords.Column + 1);
+
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -79,9 +86,10 @@ internal class Knight : Piece
         {
             processedCoords = new Coords(coords.Row - 1, coords.Column - 2);
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -91,9 +99,10 @@ internal class Knight : Piece
         {
             processedCoords = new Coords(coords.Row + 1, coords.Column - 2);
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -104,9 +113,10 @@ internal class Knight : Piece
         {
             processedCoords = new Coords(coords.Row - 1, coords.Column + 2);
             
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -115,10 +125,11 @@ internal class Knight : Piece
         if (coords.Row < 7 && coords.Column < 6)
         {
             processedCoords = new Coords(coords.Row + 1, coords.Column + 2);
+            
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
 
-            if (condition.Chessboard[processedCoords.Row, processedCoords.Column].Status is Status.Empty
-                    or Status.EnPassant ||
-                condition.Chessboard[processedCoords.Row, processedCoords.Column].White != White)
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -130,7 +141,9 @@ internal class Knight : Piece
             // only check preventing moves are legal.
             for (var i = possibleMoves.Count - 1; i >= 0; i--)
             {
-                if (ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition) is false)
+                var validMoveDuring = ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition);
+                
+                if (validMoveDuring is false)
                 {
                     possibleMoves.RemoveAt(i);
                 }

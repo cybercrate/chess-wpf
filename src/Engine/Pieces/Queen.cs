@@ -35,7 +35,9 @@ internal class Queen : MovablePiece
             // Only check preventing moves are legal.
             for (var i = possibleMoves.Count - 1; i >= 0; i--)
             {
-                if (ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition) is false)
+                var validMoveDuring = ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition);
+                
+                if (validMoveDuring is false)
                 {
                     possibleMoves.RemoveAt(i);
                 }

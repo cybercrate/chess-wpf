@@ -15,6 +15,13 @@ public static class IconLoader
     private const string Open = "OpenIcon.png";
     private const string Save = "SaveIcon.png";
     private const string Settings = "SettingsIcon.png";
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static BitmapImage GetImage(IconType type) => new(new Uri(GeneratePath(type), UriKind.Relative));
 
     private static string GeneratePath(IconType type)
     {
@@ -33,11 +40,4 @@ public static class IconLoader
 
         return $"{RelativePath}/{imageFile}";
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static BitmapImage GetImage(IconType type) => new(new Uri(GeneratePath(type), UriKind.Relative));
 }

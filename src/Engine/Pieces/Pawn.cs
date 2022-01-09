@@ -14,6 +14,9 @@ internal class Pawn : Piece
     public override void UpdatePossibleMoves(Condition condition, bool check, Coords coords)
     {
         List<Coords> possibleMoves = new();
+
+        Status status;
+        bool white;
         
         if (condition.Draw50 > 99)
         {
@@ -28,16 +31,20 @@ internal class Pawn : Piece
             // Checking whether the pawn isn't in the last row.
             if (coords.Row is not 7)
             {
+                status = condition.Chessboard[coords.Row + 1, coords.Column].Status;
+                
                 // 1st square ahead of the pawn is free.
-                if (condition.Chessboard[coords.Row + 1, coords.Column].Status is Status.Empty)
+                if (status is Status.Empty)
                 {
                     possibleMoves.Add(new Coords(coords.Row + 1, coords.Column));
                     
                     // The piece is on starting position.
                     if (coords.Row is 1)
                     {
+                        status = condition.Chessboard[coords.Row + 2, coords.Column].Status;
+                        
                         // 2nd square ahead of the pawn is free.
-                        if (condition.Chessboard[coords.Row + 2, coords.Column].Status is Status.Empty)
+                        if (status is Status.Empty)
                         {
                             possibleMoves.Add(new Coords(coords.Row + 2, coords.Column));
                         }
@@ -47,11 +54,15 @@ internal class Pawn : Piece
                 // Checking whether the pawn isn't in the left column.
                 if (coords.Column is not 0)
                 {
+                    status = condition.Chessboard[coords.Row + 1, coords.Column - 1].Status;
+                    
                     // On the left attack square is a piece?
-                    if (condition.Chessboard[coords.Row + 1, coords.Column - 1].Status is not Status.Empty)
+                    if (status is not Status.Empty)
                     {
+                        white = condition.Chessboard[coords.Row + 1, coords.Column - 1].White;
+                        
                         // Piece is enemy.
-                        if (condition.Chessboard[coords.Row + 1, coords.Column - 1].White != White)
+                        if (white != White)
                         {
                             possibleMoves.Add(new Coords(coords.Row + 1, coords.Column - 1));
                         }
@@ -61,11 +72,15 @@ internal class Pawn : Piece
                 // Checking whether the pawn isn't in the right column.
                 if (coords.Column is not 7)
                 {
+                    status = condition.Chessboard[coords.Row + 1, coords.Column + 1].Status;
+                    
                     // On the right attack square is a piece?
-                    if (condition.Chessboard[coords.Row + 1, coords.Column + 1].Status is not Status.Empty)
+                    if (status is not Status.Empty)
                     {
+                        white = condition.Chessboard[coords.Row + 1, coords.Column + 1].White;
+                        
                         // Piece is enemy.
-                        if (condition.Chessboard[coords.Row + 1, coords.Column + 1].White != White)
+                        if (white != White)
                         {
                             possibleMoves.Add(new Coords(coords.Row + 1, coords.Column + 1));
                         }
@@ -79,16 +94,20 @@ internal class Pawn : Piece
             // Checking whether a pawn isn't in the last row.
             if (coords.Row is not 0)
             {
+                status = condition.Chessboard[coords.Row - 1, coords.Column].Status;
+                
                 // 1st square ahead of the pawn is free.
-                if (condition.Chessboard[coords.Row - 1, coords.Column].Status is Status.Empty)
+                if (status is Status.Empty)
                 {
                     possibleMoves.Add(new Coords(coords.Row - 1, coords.Column));
                     
                     // The piece is on starting position.
                     if (coords.Row is 6)
                     {
+                        status = condition.Chessboard[coords.Row - 2, coords.Column].Status;
+                        
                         // 2nd square ahead of the pawn is free.
-                        if (condition.Chessboard[coords.Row - 2, coords.Column].Status is Status.Empty)
+                        if (status is Status.Empty)
                         {
                             possibleMoves.Add(new Coords(coords.Row - 2, coords.Column));
                         }
@@ -98,11 +117,15 @@ internal class Pawn : Piece
                 // Checking whether the pawn isn't in the left column.
                 if (coords.Column is not 0)
                 {
+                    status = condition.Chessboard[coords.Row - 1, coords.Column - 1].Status;
+                    
                     // On the left attack square is a piece?
-                    if (condition.Chessboard[coords.Row - 1, coords.Column - 1].Status is not Status.Empty)
+                    if (status is not Status.Empty)
                     {
+                        white = condition.Chessboard[coords.Row - 1, coords.Column - 1].White;
+                        
                         // Piece is enemy.
-                        if (condition.Chessboard[coords.Row - 1, coords.Column - 1].White != White)
+                        if (white != White)
                         {
                             possibleMoves.Add(new Coords(coords.Row - 1, coords.Column - 1));
                         }
@@ -112,11 +135,15 @@ internal class Pawn : Piece
                 // Checking whether the pawn isn't in the right column.
                 if (coords.Column is not 7)
                 {
+                    status = condition.Chessboard[coords.Row - 1, coords.Column + 1].Status;
+
                     // On the right attack square is a piece?
-                    if (condition.Chessboard[coords.Row - 1, coords.Column + 1].Status is not Status.Empty)
+                    if (status is not Status.Empty)
                     {
+                        white = condition.Chessboard[coords.Row - 1, coords.Column + 1].White;
+                        
                         // Piece is enemy.
-                        if (condition.Chessboard[coords.Row - 1, coords.Column + 1].White != White)
+                        if (white != White)
                         {
                             possibleMoves.Add(new Coords(coords.Row - 1, coords.Column + 1));
                         }
@@ -131,7 +158,9 @@ internal class Pawn : Piece
             // only check preventing moves are legal.
             for (var i = possibleMoves.Count - 1; i >= 0; i--)
             {
-                if (ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition) is false)
+                var validMoveDuring = ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition);
+
+                if (validMoveDuring is false)
                 {
                     possibleMoves.RemoveAt(i);
                 }

@@ -32,11 +32,11 @@ public class Condition
         {
             for (var row = 0; row < 8; row++)
             {
-                for (var col = 0; col < 8; col++)
+                for (var column = 0; column < 8; column++)
                 {
-                    if (Chessboard[row, col].Status is Status.King && Chessboard[row, col].White == WhiteOnTurn)
+                    if (Chessboard[row, column].Status is Status.King && Chessboard[row, column].White == WhiteOnTurn)
                     {
-                        return new Coords(row, col);
+                        return new Coords(row, column);
                     }
                 }
             }
@@ -129,28 +129,33 @@ public class Condition
             
         for (var row = 0; row < 8; row++)
         {
-            for (var col = 0; col < 8; col++)
+            for (var column = 0; column < 8; column++)
             {
-                if (Chessboard[row, col].Status is Status.Empty or Status.EnPassant)
+                if (Chessboard[row, column].Status is Status.Empty or Status.EnPassant)
                 {
                     continue;
                 }
                     
                 sb.Append(row);
-                sb.Append(col);
-                sb.Append(Chessboard[row, col].White ? Token.White : Token.Black);
-                sb.Append(Chessboard[row, col].Status);
+                sb.Append(column);
+                sb.Append(Chessboard[row, column].White ? Token.White : Token.Black);
+                sb.Append(Chessboard[row, column].Status);
             }
         }
-            
-        sb.Append(WhiteOnTurn.ToString()[0]);
-        sb.Append(WhiteKingMoved.ToString()[0]);
-        sb.Append(WhiteSmallRookMoved.ToString()[0]);
-        sb.Append(WhiteLargeRookMoved.ToString()[0]);
-        sb.Append(BlackKingMoved.ToString()[0]);
-        sb.Append(BlackSmallRookMoved.ToString()[0]);
-        sb.Append(BlackLargeRookMoved.ToString()[0]);
-            
+
+        var flags = new[]
+        {
+            WhiteOnTurn ? Token.True : Token.False,
+            WhiteKingMoved ? Token.True : Token.False,
+            WhiteSmallRookMoved ? Token.True : Token.False,
+            WhiteLargeRookMoved ? Token.True : Token.False,
+            BlackKingMoved ? Token.True : Token.False,
+            BlackSmallRookMoved ? Token.True : Token.False,
+            BlackLargeRookMoved ? Token.True : Token.False
+        };
+
+        sb.Append(new string(flags));
+
         return sb.ToString();
     }
 }

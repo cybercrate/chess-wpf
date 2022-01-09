@@ -154,7 +154,7 @@ internal class File
         }
 
         // Writing other condition parameters into 10th line.
-        var result = new char[7]
+        var result = new[]
         {
             condition.WhiteOnTurn ? Token.True : Token.False,
             condition.WhiteKingMoved ? Token.True : Token.False,
@@ -174,27 +174,27 @@ internal class File
     private static Condition? LoadBasicData(TextReader tr)
     {
         Condition condition = new();
-        char c;
+        char firstChar;
 
         // Loading pieces.
         for (var row = 0; row < 8; row++)
         {
             for (var column = 0; column < 8; column++)
             {
-                c = (char)tr.Read();
+                firstChar = (char)tr.Read();
                 
                 // If there is no other char to read, sr.Read() returns invalid symbol.
-                if (c is Token.Invalid)
+                if (firstChar is Token.Invalid)
                 {
                     return null;
                 }
                 
-                condition.Chessboard[row, column] = new PieceId(ToStatus(c));
+                condition.Chessboard[row, column] = new PieceId(ToStatus(firstChar));
                 
-                if (c is not Token.Empty)
+                if (firstChar is not Token.Empty)
                 {
-                    c = (char)tr.Read();
-                    condition.Chessboard[row, column].White = c is Token.White;
+                    firstChar = (char)tr.Read();
+                    condition.Chessboard[row, column].White = firstChar is Token.White;
                 }
                 else
                 {
@@ -203,57 +203,55 @@ internal class File
                 }
             }
             
-            // Reads the return character.
+            // Reads the return and new line characters.
             tr.Read();
-            
-            // Reads the new line character.
             tr.Read();
         }
 
         // Loading other parameters.
-        c = (char)tr.Read();
-        condition.WhiteOnTurn = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.WhiteOnTurn = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.WhiteKingMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.WhiteKingMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.WhiteSmallRookMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.WhiteSmallRookMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.WhiteLargeRookMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.WhiteLargeRookMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.BlackKingMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.BlackKingMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.BlackSmallRookMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.BlackSmallRookMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        condition.BlackLargeRookMoved = c is Token.True;
+        firstChar = (char)tr.Read();
+        condition.BlackLargeRookMoved = firstChar is Token.True;
         
-        c = (char)tr.Read();
-        var c2 = (char)tr.Read();
+        firstChar = (char)tr.Read();
+        var secondChar = (char)tr.Read();
         
-        if (c2 is not Token.Return)
+        if (secondChar is not Token.Return)
         {
-            var c3 = (char)tr.Read();
+            var thirdChar = (char)tr.Read();
             
-            if (c3 is not Token.Return)
+            if (thirdChar is not Token.Return)
             {
-                condition.Draw50 = int.Parse($"{c}{c2}{c3}");
+                condition.Draw50 = int.Parse($"{firstChar}{secondChar}{thirdChar}");
                 
                 // Reads the return character.
                 tr.Read();
             }
             else
             {
-                condition.Draw50 = int.Parse($"{c}{c2}");
+                condition.Draw50 = int.Parse($"{firstChar}{secondChar}");
             }
         }
         else
         {
-            condition.Draw50 = int.Parse(c.ToString());
+            condition.Draw50 = int.Parse(firstChar.ToString());
         }
 
         // Read the new line character.

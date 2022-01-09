@@ -23,7 +23,7 @@ public partial class PieceSelection
 
         for (var i = 0; i < 4; i++)
         {
-            var image = new Image
+            Image image = new()
             {
                 IsHitTestVisible = false
             };
@@ -54,21 +54,21 @@ public partial class PieceSelection
 
     private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.Source is Button)
+        if (e.Source is Button button)
         {
-            if (Equals(e.Source, RookButton))
+            if (Equals(button, RookButton))
             {
                 Status = Status.Rook;
             }
-            else if (Equals(e.Source, KnightButton))
+            else if (Equals(button, KnightButton))
             {
                 Status = Status.Knight;
             }
-            else if (Equals(e.Source, BishopButton))
+            else if (Equals(button, BishopButton))
             {
                 Status = Status.Bishop;
             }
-            else if (Equals(e.Source, QueenButton))
+            else if (Equals(button, QueenButton))
             {
                 Status = Status.Queen;
             }

@@ -14,12 +14,7 @@ internal class CalculatedCondition
     /// Pieces of calculated condition. Key is made from row and column.
     /// </summary>
     public Dictionary<Coords, IPiece> PiecesOnTurn { get; }
-    
-    /// <summary>
-    /// Whether the white player is on turn.
-    /// </summary>
-    private bool WhiteOnTurn { get; }
-    
+
     /// <summary>
     /// Is the king that is on turn in check?
     /// </summary>
@@ -36,7 +31,7 @@ internal class CalculatedCondition
     /// </summary>
     public CalculatedCondition(Condition condition)
     {
-        WhiteOnTurn = condition.WhiteOnTurn;
+        var whiteOnTurn = condition.WhiteOnTurn;
             
         // Coordinates of the king on turn.
         Coords kingCoords = new();
@@ -44,20 +39,21 @@ internal class CalculatedCondition
         PiecesOnTurn = new Dictionary<Coords, IPiece>();
 
         var key = condition.ToString();
+        var data = ChessEngine.CalculatedConditionData.TryGetValue(key, out var calculatedConditionData);
         
-        if (ChessEngine.CalculatedConditionData.TryGetValue(key, out var calculatedConditionData))
+        if (data)
         {
             // Creating friendly pieces and saving them into dictionary.
             for (var row = 0; row < 8; row++)
             {
-                for (var col = 0; col < 8; col++)
+                for (var column = 0; column < 8; column++)
                 {
                     IPiece piece;
                     
-                    var status = condition.Chessboard[row, col].Status;
-                    var white = condition.Chessboard[row, col].White;
+                    var status = condition.Chessboard[row, column].Status;
+                    var white = condition.Chessboard[row, column].White;
 
-                    if (white != WhiteOnTurn || status is Status.Empty or Status.EnPassant)
+                    if (white != whiteOnTurn || status is Status.Empty or Status.EnPassant)
                     {
                         continue;
                     }
@@ -65,8 +61,8 @@ internal class CalculatedCondition
                     // Getting type of piece and adding it into dictionary.
                     if (status is Status.King)
                     {
-                        piece = new King(condition.Chessboard[row, col].White);
-                        kingCoords = new Coords((sbyte)row, (sbyte)col);
+                        piece = new King(condition.Chessboard[row, column].White);
+                        kingCoords = new Coords((sbyte)row, (sbyte)column);
                     }
                     else
                     {
@@ -81,7 +77,7 @@ internal class CalculatedCondition
                         };
                     }
                     
-                    PiecesOnTurn.Add(new Coords(row, col), piece);
+                    PiecesOnTurn.Add(new Coords(row, column), piece);
                 }
             }
         }
@@ -90,14 +86,14 @@ internal class CalculatedCondition
             calculatedConditionData = new CalculatedConditionData();
             
             // Creating pieces, calculating moves and attacks, and saving into collections.
-            for (sbyte ra = 0; ra < 8; ra++)
+            for (sbyte row = 0; row < 8; row++)
             {
-                for (sbyte sl = 0; sl < 8; sl++)
+                for (sbyte column = 0; column < 8; column++)
                 {
                     IPiece piece;
 
-                    var status = condition.Chessboard[ra, sl].Status;
-                    var white = condition.Chessboard[ra, sl].White;
+                    var status = condition.Chessboard[row, column].Status;
+                    var white = condition.Chessboard[row, column].White;
 
                     switch (status)
                     {
@@ -108,9 +104,9 @@ internal class CalculatedCondition
                         {
                             piece = new King(white);
                         
-                            if (piece.White == WhiteOnTurn)
+                            if (piece.White == whiteOnTurn)
                             {
-                                kingCoords = new Coords(ra, sl);
+                                kingCoords = new Coords(row, column);
                             }
 
                             break;
@@ -132,14 +128,14 @@ internal class CalculatedCondition
                     }
                     
                     // If the piece is on turn...
-                    if (piece.White == WhiteOnTurn)
+                    if (piece.White == whiteOnTurn)
                     {
-                        PiecesOnTurn.Add(new Coords(ra, sl), piece);
+                        PiecesOnTurn.Add(new Coords(row, column), piece);
                     }
                     // The piece is not on turn...
                     else
                     {
-                        piece.UpdatePossibleAttacks(condition, new Coords(ra, sl));
+                        piece.UpdatePossibleAttacks(condition, new Coords(row, column));
                         
                         foreach (Coords possibleAttackCoords in piece.PossibleAttacks)
                         {
@@ -220,10 +216,10 @@ internal class CalculatedCondition
         // Creating enemy pieces and calculating possible moves.
         for (sbyte row = 0; row < 8; row++)
         {
-            for (sbyte col = 0; col < 8; col++)
+            for (sbyte column = 0; column < 8; column++)
             {
-                var status = condition.Chessboard[row, col].Status;
-                var white = condition.Chessboard[row, col].White;
+                var status = condition.Chessboard[row, column].Status;
+                var white = condition.Chessboard[row, column].White;
 
                 if (status is Status.Empty or Status.EnPassant)
                 {
@@ -247,7 +243,7 @@ internal class CalculatedCondition
                     continue;
                 }
                 
-                piece.UpdatePossibleAttacks(condition, new Coords(row, col));
+                piece.UpdatePossibleAttacks(condition, new Coords(row, column));
                 
                 foreach (Coords possibleAttackCoords in piece.PossibleAttacks)
                 {

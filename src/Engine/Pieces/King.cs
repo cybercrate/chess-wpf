@@ -30,122 +30,158 @@ internal class King : Piece
         }
 
         // Creating currently processed coords.
-        Coords pc = new(coords.Row, coords.Column - 1);
+        Coords processedCoords = new(coords.Row, coords.Column - 1);
+
+        Status status;
+        bool white;
+        bool possibleEnemyAttack;
 
         // Left.
         if (coords.Column > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Left up.
-        pc = new Coords(coords.Row - 1, coords.Column - 1);
+        processedCoords = new Coords(coords.Row - 1, coords.Column - 1);
 
         if (coords.Column > 0 && coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Up.
-        pc = new Coords(coords.Row - 1, coords.Column);
+        processedCoords = new Coords(coords.Row - 1, coords.Column);
 
         if (coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Right up.
-        pc = new Coords(coords.Row - 1, coords.Column + 1);
+        processedCoords = new Coords(coords.Row - 1, coords.Column + 1);
 
         if (coords.Column < 7 && coords.Row > 0)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Right.
-        pc = new Coords(coords.Row, coords.Column + 1);
+        processedCoords = new Coords(coords.Row, coords.Column + 1);
 
         if (coords.Column < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Right down.
-        pc = new Coords(coords.Row + 1, coords.Column + 1);
+        processedCoords = new Coords(coords.Row + 1, coords.Column + 1);
 
         if (coords.Column < 7 && coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Down.
-        pc = new Coords(coords.Row + 1, coords.Column);
+        processedCoords = new Coords(coords.Row + 1, coords.Column);
 
         if (coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
 
         // Left down.
-        pc = new Coords(coords.Row + 1, coords.Column - 1);
+        processedCoords = new Coords(coords.Row + 1, coords.Column - 1);
 
         if (coords.Column > 0 && coords.Row < 7)
         {
-            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant ||
-                condition.Chessboard[pc.Row, pc.Column].White != White)
+            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            
+            if (status is Status.Empty or Status.EnPassant || white != White)
             {
-                if (PossibleEnemyAttacks.Contains(pc) is false)
+                possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
+                
+                if (possibleEnemyAttack is false)
                 {
-                    possibleMoves.Add(pc);
+                    possibleMoves.Add(processedCoords);
                 }
             }
         }
@@ -160,18 +196,21 @@ internal class King : Piece
                     // Small castling (right).
                     if (condition.WhiteSmallRookMoved is false)
                     {
+                        status = condition.Chessboard[coords.Row, coords.Column + 1].Status;
+                        possibleEnemyAttack = PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1));
+
                         // Is Col + 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is Status.Empty
-                                or Status.EnPassant &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1)) is false)
+                        if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                         {
-                            pc = new Coords(coords.Row, coords.Column + 2);
+                            processedCoords = new Coords(coords.Row, coords.Column + 2);
+
+                            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+                            possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
 
                             // Is Col + 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
-                                PossibleEnemyAttacks.Contains(pc) is false)
+                            if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                             {
-                                possibleMoves.Add(pc);
+                                possibleMoves.Add(processedCoords);
                             }
                         }
                     }
@@ -179,22 +218,26 @@ internal class King : Piece
                     // Large castling (left).
                     if (condition.WhiteLargeRookMoved is false)
                     {
+                        status = condition.Chessboard[coords.Row, coords.Column - 1].Status;
+                        possibleEnemyAttack = PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1));
+                        
                         // Is Col - 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is Status.Empty
-                                or Status.EnPassant &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1)) is false)
+                        if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                         {
-                            pc = new Coords(coords.Row, coords.Column - 2);
+                            processedCoords = new Coords(coords.Row, coords.Column - 2);
+
+                            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+                            possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
 
                             // Is Col - 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
-                                PossibleEnemyAttacks.Contains(pc) is false)
+                            if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                             {
+                                status = condition.Chessboard[coords.Row, coords.Column - 3].Status;
+                                
                                 // Is Col - 3 square free?
-                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is Status.Empty
-                                    or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
-                                    possibleMoves.Add(pc);
+                                    possibleMoves.Add(processedCoords);
                                 }
                             }
                         }
@@ -208,18 +251,21 @@ internal class King : Piece
                     // Small castling (right).
                     if (condition.BlackSmallRookMoved is false)
                     {
+                        status = condition.Chessboard[coords.Row, coords.Column + 1].Status;
+                        possibleEnemyAttack = PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1));
+                        
                         // Is Col +1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column + 1].Status is Status.Empty
-                                or Status.EnPassant &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column + 1)) is false)
+                        if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                         {
-                            pc = new Coords(coords.Row, coords.Column + 2);
+                            processedCoords = new Coords(coords.Row, coords.Column + 2);
+
+                            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+                            possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
 
                             // Is Col + 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
-                                PossibleEnemyAttacks.Contains(pc) is false)
+                            if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                             {
-                                possibleMoves.Add(pc);
+                                possibleMoves.Add(processedCoords);
                             }
                         }
                     }
@@ -227,22 +273,26 @@ internal class King : Piece
                     // Large castling (left).
                     if (condition.BlackLargeRookMoved is false)
                     {
+                        status = condition.Chessboard[coords.Row, coords.Column - 1].Status;
+                        possibleEnemyAttack = PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1));
+                        
                         // Is Col - 1 square free and safe?
-                        if (condition.Chessboard[coords.Row, coords.Column - 1].Status is Status.Empty
-                                or Status.EnPassant &&
-                            PossibleEnemyAttacks.Contains(new Coords(coords.Row, coords.Column - 1)) is false)
+                        if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                         {
-                            pc = new Coords(coords.Row, coords.Column - 2);
+                            processedCoords = new Coords(coords.Row, coords.Column - 2);
+
+                            status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
+                            possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
 
                             // Is Col - 2 square free and safe?
-                            if (condition.Chessboard[pc.Row, pc.Column].Status is Status.Empty or Status.EnPassant &&
-                                PossibleEnemyAttacks.Contains(pc) is false)
+                            if (status is Status.Empty or Status.EnPassant && possibleEnemyAttack is false)
                             {
+                                status = condition.Chessboard[coords.Row, coords.Column - 3].Status;
+                                
                                 // Is Col - 3 square free?
-                                if (condition.Chessboard[coords.Row, coords.Column - 3].Status is Status.Empty
-                                    or Status.EnPassant)
+                                if (status is Status.Empty or Status.EnPassant)
                                 {
-                                    possibleMoves.Add(pc);
+                                    possibleMoves.Add(processedCoords);
                                 }
                             }
                         }
@@ -256,7 +306,9 @@ internal class King : Piece
             // Only check preventing moves are legal.
             for (var i = possibleMoves.Count - 1; i >= 0; i--)
             {
-                if (ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition) is false)
+                var validMoveDuring = ChessEngine.ValidMoveDuringCheck(coords, possibleMoves[i], condition);
+                
+                if (validMoveDuring is false)
                 {
                     possibleMoves.RemoveAt(i);
                 }

@@ -9,6 +9,11 @@ internal static class Emulator
     private static readonly Random Random = new();
     private static readonly Dictionary<Status, int> PiecesValues = new();
 
+    /// <summary>
+    /// If this field is set to true, the multithreading calculation is stopped asap.
+    /// </summary>
+    public static bool InterruptHalfTurn;
+
     static Emulator()
     {
         PiecesValues.Add(Status.Pawn, 1);
@@ -18,12 +23,7 @@ internal static class Emulator
         PiecesValues.Add(Status.Rook, 5);
         PiecesValues.Add(Status.Queen, 9);
     }
-
-    /// <summary>
-    /// If this field is set to true, the multithreading calculation is stopped asap.
-    /// </summary>
-    public static bool InterruptHalfTurn;
-
+    
     /// <summary>
     /// Selects halfTurn from calculated condition. Calculation is done in parallel.
     /// </summary>
@@ -81,9 +81,11 @@ internal static class Emulator
     /// </summary>
     private static List<HalfTurn> PossibleHalfTurns(CalculatedCondition calculatedCondition)
     {
-        return (from piece in calculatedCondition.PiecesOnTurn
+        var result = (from piece in calculatedCondition.PiecesOnTurn
             from coords in piece.Value.PossibleMoves
             select new HalfTurn(piece.Key, coords)).ToList();
+
+        return result;
     }
 
     /// <summary>
@@ -92,7 +94,10 @@ internal static class Emulator
     /// <returns>Returns value of the best move.</returns>
     private static int Minimax(CalculatedCondition calcCondition, Condition condition, int depth)
     {
-        if (InterruptHalfTurn) return int.MaxValue;
+        if (InterruptHalfTurn)
+        {
+            return int.MaxValue;
+        }
 
         var possibleHalfTurns = PossibleHalfTurns(calcCondition);
         var max = int.MinValue;
@@ -102,9 +107,12 @@ internal static class Emulator
             foreach (HalfTurn halfTurn in possibleHalfTurns)
             {
                 BasicEvaluating(condition, halfTurn);
+                
+                var possibleAttacks = CalculatedCondition
+                    .GetDataOfCalculatedSituation(condition)!
+                    .EnemyPossibleAttacks.Contains(halfTurn.To);
 
-                if (CalculatedCondition.GetDataOfCalculatedSituation(condition)!
-                    .EnemyPossibleAttacks.Contains(halfTurn.To))
+                if (possibleAttacks)
                 {
                     var pieceValue = PiecesValues[condition.Chessboard[halfTurn.From.Row, halfTurn.From.Column].Status];
                     halfTurn.Value -= pieceValue;
@@ -160,10 +168,10 @@ internal static class Emulator
 
         if (fromStatus is not Status.Pawn)
         {
-            // Evaluating pawn at the ends of row.
             return;
         }
-
+        
+        // Evaluating pawn at the ends of row.
         if (halfTurn.To.Row is 0 or 7)
         {
             halfTurn.Value += 4;
