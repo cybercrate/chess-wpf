@@ -1,7 +1,6 @@
 ﻿using Engine.Conditions;
-using System.IO;
-using System.Text;
 using Engine.Pieces.Types;
+using System.IO;
 
 namespace Engine.IO;
 
@@ -155,23 +154,24 @@ internal class File
         }
 
         // Writing other condition parameters into 10th line.
-        StringBuilder sb = new();
-        sb.Append(condition.WhiteOnTurn.ToString()[0]);
-        sb.Append(condition.WhiteKingMoved.ToString()[0]);
-        sb.Append(condition.WhiteSmallRookMoved.ToString()[0]);
-        sb.Append(condition.WhiteLargeRookMoved.ToString()[0]);
-        sb.Append(condition.BlackKingMoved.ToString()[0]);
-        sb.Append(condition.BlackSmallRookMoved.ToString()[0]);
-        sb.Append(condition.BlackLargeRookMoved.ToString()[0]);
-        sb.Append(condition.Draw50);
+        var result = new char[7]
+        {
+            condition.WhiteOnTurn ? Token.True : Token.False,
+            condition.WhiteKingMoved ? Token.True : Token.False,
+            condition.WhiteSmallRookMoved ? Token.True : Token.False,
+            condition.WhiteLargeRookMoved ? Token.True : Token.False,
+            condition.BlackKingMoved ? Token.True : Token.False,
+            condition.BlackSmallRookMoved ? Token.True : Token.False,
+            condition.BlackLargeRookMoved ? Token.True : Token.False
+        };
 
-        tw.WriteLine(sb.ToString());
+        tw.WriteLine($"{new string(result)}{condition.Draw50}");
     }
     
     /// <summary>
     /// Loading basic data (pieces positions and other).
     /// </summary>
-    private static Condition? LoadBasicData(TextReader sr)
+    private static Condition? LoadBasicData(TextReader tr)
     {
         Condition condition = new();
         char c;
@@ -181,9 +181,9 @@ internal class File
         {
             for (var column = 0; column < 8; column++)
             {
-                c = (char)sr.Read();
+                c = (char)tr.Read();
                 
-                // If there is no other char to read, sr.Read() returns '\uffff'.
+                // If there is no other char to read, sr.Read() returns invalid symbol.
                 if (c is Token.Invalid)
                 {
                     return null;
@@ -193,62 +193,62 @@ internal class File
                 
                 if (c is not Token.Empty)
                 {
-                    c = (char)sr.Read();
+                    c = (char)tr.Read();
                     condition.Chessboard[row, column].White = c is Token.White;
                 }
                 else
                 {
                     // Reads the empty space behind the empty square.
-                    sr.Read();
+                    tr.Read();
                 }
             }
             
             // Reads the return character.
-            sr.Read();
+            tr.Read();
             
             // Reads the new line character.
-            sr.Read();
+            tr.Read();
         }
 
         // Loading other parameters.
-        c = (char)sr.Read();
-        condition.WhiteOnTurn = c is Token.Result;
+        c = (char)tr.Read();
+        condition.WhiteOnTurn = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.WhiteKingMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.WhiteKingMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.WhiteSmallRookMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.WhiteSmallRookMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.WhiteLargeRookMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.WhiteLargeRookMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.BlackKingMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.BlackKingMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.BlackSmallRookMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.BlackSmallRookMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        condition.BlackLargeRookMoved = c is Token.Result;
+        c = (char)tr.Read();
+        condition.BlackLargeRookMoved = c is Token.True;
         
-        c = (char)sr.Read();
-        var c2 = (char)sr.Read();
+        c = (char)tr.Read();
+        var c2 = (char)tr.Read();
         
         if (c2 is not Token.Return)
         {
-            var c3 = (char)sr.Read();
+            var c3 = (char)tr.Read();
             
             if (c3 is not Token.Return)
             {
-                condition.Draw50 = int.Parse($"{c.ToString()}{c2.ToString()}{c3.ToString()}");
+                condition.Draw50 = int.Parse($"{c}{c2}{c3}");
                 
                 // Reads the return character.
-                sr.Read();
+                tr.Read();
             }
             else
             {
-                condition.Draw50 = int.Parse($"{c.ToString()}{c2.ToString()}");
+                condition.Draw50 = int.Parse($"{c}{c2}");
             }
         }
         else
@@ -257,7 +257,7 @@ internal class File
         }
 
         // Read the new line character.
-        sr.Read();
+        tr.Read();
 
         return condition;
     }

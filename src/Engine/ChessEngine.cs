@@ -1,6 +1,7 @@
 ﻿using Engine.AI;
 using Engine.Conditions;
 using Engine.IO;
+using Engine.Pieces.Types;
 using Engine.ResourceManagement;
 using Engine.UtilityComponents;
 using Microsoft.Win32;
@@ -10,7 +11,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Engine.Pieces.Types;
 
 namespace Engine;
 

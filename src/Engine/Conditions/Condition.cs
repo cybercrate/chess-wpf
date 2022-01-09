@@ -1,7 +1,7 @@
-﻿using System.Text;
-using Engine.IO;
+﻿using Engine.IO;
 using Engine.Pieces.Types;
 using Engine.UtilityComponents;
+using System.Text;
 
 namespace Engine.Conditions;
 
