@@ -16,7 +16,7 @@ public partial class MainWindow
         InitializeComponent();
         
         Title = "Chess";
-        Icon = IconLoader.GetImage(IconType.Main);
+        Icon = IconLoader.GetWindowImage();
 
         _chessUserControl = new ChessUserControls(LoadNewGameUserControl);
         LoadChessUserControl();

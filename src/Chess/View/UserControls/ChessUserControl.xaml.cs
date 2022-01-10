@@ -1,11 +1,11 @@
 ﻿using Engine;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Engine.Pieces.Types;
 
 namespace Chess.View.UserControls;
 
@@ -19,6 +19,9 @@ public partial class ChessUserControls
     private readonly Action<bool> _loadNewGameUserControl;
     
     private readonly System.Windows.Media.Effects.BlurEffect _objBlur = new() { Radius = 4 };
+    
+    // Taken piece image ratio to the whole play board.
+    private const double SizeRatio = 0.105;
     
     public ChessUserControls(Action<bool> loadNewGameUserControl)
     {
@@ -97,8 +100,11 @@ public partial class ChessUserControls
     {
         _resizeTimer.IsEnabled = false;
         _chessEngine.ImageSizeWrapPanel = Grid.ActualHeight * SizeRatio;
+
+        var wrapPanelWhite = WrapPanelWhite.Children[0] is TextBlock;
+        var wrapPanelBlack = WrapPanelBlack.Children[0] is TextBlock;
             
-        if (WrapPanelWhite.Children.Count > 0 && WrapPanelWhite.Children[0] is TextBlock is false)
+        if (WrapPanelWhite.Children.Count > 0 && wrapPanelWhite is false)
         {
             foreach (Image image in WrapPanelWhite.Children)
             {
@@ -107,7 +113,7 @@ public partial class ChessUserControls
             }
         }
 
-        if (WrapPanelBlack.Children.Count > 0 && WrapPanelBlack.Children[0] is TextBlock is false)
+        if (WrapPanelBlack.Children.Count > 0 && wrapPanelBlack is false)
         {
             foreach (Image image in WrapPanelBlack.Children)
             {
@@ -117,11 +123,6 @@ public partial class ChessUserControls
         }
     }
 
-    /// <summary>
-    /// Taken piece image ratio to the whole play board.
-    /// </summary>
-    private const double SizeRatio = 0.105;
-    
     /// <summary>
     /// Modifies controls layout based on window size.
     /// </summary>
@@ -134,12 +135,14 @@ public partial class ChessUserControls
         if (width - widthWithoutBorders > height)
         {
             var margin = width - height;
+            
             GridSizeRatio.RowDefinitions[3].Height = new GridLength(0);
             GridSizeRatio.ColumnDefinitions[3].Width = new GridLength(margin);
         }
         else
         {
             var margin = height - width;
+            
             GridSizeRatio.ColumnDefinitions[3].Width = new GridLength(widthWithoutBorders);
             GridSizeRatio.RowDefinitions[3].Height = new GridLength(margin + widthWithoutBorders);
         }

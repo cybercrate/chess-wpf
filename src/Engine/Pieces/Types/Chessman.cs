@@ -1,5 +1,8 @@
 ﻿namespace Engine.Pieces.Types;
 
+/// <summary>
+/// Represents chessman type.
+/// </summary>
 public enum Chessman
 {
     PawnWhite,

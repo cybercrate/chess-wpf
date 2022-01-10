@@ -185,7 +185,7 @@ internal class File
             {
                 firstChar = (char)tr.Read();
                 
-                // If there is no other char to read, sr.Read() returns invalid symbol.
+                // If an invalid character is read, subsequent reading will be interrupted immediately.
                 if (firstChar is Token.Invalid)
                 {
                     return null;
@@ -212,7 +212,7 @@ internal class File
             tr.Read();
         }
 
-        // Loading other parameters.
+        // Loading additional configuration parameters.
         firstChar = (char)tr.Read();
         condition.WhiteOnTurn = firstChar is Token.True;
         
@@ -245,7 +245,7 @@ internal class File
             {
                 condition.Draw50 = int.Parse($"{firstChar}{secondChar}{thirdChar}");
                 
-                // Reads the return character.
+                // Read the return character.
                 tr.Read();
             }
             else

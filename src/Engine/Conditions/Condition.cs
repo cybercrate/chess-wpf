@@ -6,7 +6,8 @@ using System.Text;
 namespace Engine.Conditions;
 
 /// <summary>
-/// Stores chess condition. Contains only raw data (needed for upcoming analysis).
+/// Chess condition storage.
+/// Contains only raw data for upcoming analysis.
 /// </summary>
 public class Condition
 {

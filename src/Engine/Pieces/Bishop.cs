@@ -5,9 +5,9 @@ using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class Bishop: MovablePiece
+internal sealed class Bishop : MovablePiece
 {
-    public Bishop(bool white) : base(white)
+    public Bishop(PieceColor color) : base(color)
     {
     }
         
@@ -26,7 +26,7 @@ internal class Bishop: MovablePiece
         sbyte column;
         
         Status status;
-        bool white;
+        PieceColor color;
         
         // Left top side.
         for (column = (sbyte)(currentCoords.Column - 1); column >= 0; column--)
@@ -44,10 +44,10 @@ internal class Bishop: MovablePiece
                 }
                 else // Square has a piece.
                 {
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Piece is enemy.
-                    if (white != White) 
+                    if (color != PieceColor) 
                     {
                         possibleMoves.Add(new Coords(row, column));
                     }
@@ -80,10 +80,10 @@ internal class Bishop: MovablePiece
                 // Square has a piece.
                 else 
                 {
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Piece is enemy.
-                    if (white != White)
+                    if (color != PieceColor)
                     {
                         possibleMoves.Add(new Coords(row, column));
                     }
@@ -115,10 +115,10 @@ internal class Bishop: MovablePiece
                 // Square has a piece.
                 else
                 {
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Piece is enemy.
-                    if (white != White) 
+                    if (color != PieceColor) 
                     {
                         possibleMoves.Add(new Coords(row, column));
                     }
@@ -151,10 +151,10 @@ internal class Bishop: MovablePiece
                 // Square has a piece.
                 else
                 {
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Piece is enemy.
-                    if (white != White) 
+                    if (color != PieceColor) 
                     {
                         possibleMoves.Add(new Coords(row, column));
                     }
@@ -195,7 +195,7 @@ internal class Bishop: MovablePiece
         sbyte column;
 
         Status status;
-        bool white;
+        PieceColor color;
         
         // Left top side.
         for (column = (sbyte)(coords.Column - 1); column >= 0; column--)
@@ -216,10 +216,10 @@ internal class Bishop: MovablePiece
                 {
                     possibleAttacks.Add(new Coords(row, column));
 
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (white != White)
+                    if (color != PieceColor)
                     {
                         // Creating new variables for keeping the piece variables
                         var innerRow = row;
@@ -243,10 +243,10 @@ internal class Bishop: MovablePiece
                                 // King found.
                                 if (status is Status.King)
                                 {
-                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    color = condition.Chessboard[innerRow, innerColumn].PieceColor;
                                     
                                     // Enemy king..
-                                    if (white != White)
+                                    if (color != PieceColor)
                                     {
                                         PieceProtectingKingCoords = new Coords(row, column);
                                     }
@@ -291,10 +291,10 @@ internal class Bishop: MovablePiece
                 {
                     possibleAttacks.Add(new Coords(row, column));
 
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (white != White)
+                    if (color != PieceColor)
                     {
                         // Creating new variables for keeping the piece variables.
                         var innerRow = row;
@@ -318,10 +318,10 @@ internal class Bishop: MovablePiece
                                 // King found.
                                 if (status is Status.King)
                                 {
-                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    color = condition.Chessboard[innerRow, innerColumn].PieceColor;
                                     
                                     // Enemy king.
-                                    if (white != White)
+                                    if (color != PieceColor)
                                     {
                                         PieceProtectingKingCoords = new Coords(row, column);
                                     }
@@ -367,10 +367,10 @@ internal class Bishop: MovablePiece
                 {
                     possibleAttacks.Add(new Coords(row, column));
 
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (white != White)
+                    if (color != PieceColor)
                     {
                         // Creating new variables for keeping the piece variables.
                         var innerRow = row;
@@ -394,10 +394,10 @@ internal class Bishop: MovablePiece
                                 // King found.
                                 if (status is Status.King)
                                 {
-                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    color = condition.Chessboard[innerRow, innerColumn].PieceColor;
                                     
                                     // Enemy king.
-                                    if (white != White)
+                                    if (color != PieceColor)
                                     {
                                         PieceProtectingKingCoords = new Coords(row, column);
                                     }
@@ -443,10 +443,10 @@ internal class Bishop: MovablePiece
                 {
                     possibleAttacks.Add(new Coords(row, column));
 
-                    white = condition.Chessboard[row, column].White;
+                    color = condition.Chessboard[row, column].PieceColor;
                     
                     // Checking whether there is enemy king behind the enemy piece.
-                    if (white != White)
+                    if (color != PieceColor)
                     {
                         // Creating new variables for keeping the piece variables.
                         var innerRow = row;
@@ -470,10 +470,10 @@ internal class Bishop: MovablePiece
                                 // King found.
                                 if (status is Status.King)
                                 {
-                                    white = condition.Chessboard[innerRow, innerColumn].White;
+                                    color = condition.Chessboard[innerRow, innerColumn].PieceColor;
                                     
                                     // Enemy king.
-                                    if (white != White)
+                                    if (color != PieceColor)
                                     {
                                         PieceProtectingKingCoords = new Coords(row, column);
                                     }

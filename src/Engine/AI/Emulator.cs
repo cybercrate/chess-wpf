@@ -7,30 +7,30 @@ namespace Engine.AI;
 internal static class Emulator
 {
     private static readonly Random Random = new();
-    private static readonly Dictionary<Status, int> PiecesValues = new();
+
+    private static readonly Dictionary<Status, int> PiecesValues = new()
+    {
+        { Status.Pawn, 1 },
+        { Status.EnPassant, 1 },
+        { Status.Knight, 3 },
+        { Status.Bishop, 3 },
+        { Status.Rook, 5 },
+        { Status.Queen, 9 }
+    };
 
     /// <summary>
-    /// If this field is set to true, the multithreading calculation is stopped asap.
+    /// Multithreading calculation identifier.
+    /// If set true calculation stopped as soon as possible.
     /// </summary>
     public static bool InterruptHalfTurn;
 
-    static Emulator()
-    {
-        PiecesValues.Add(Status.Pawn, 1);
-        PiecesValues.Add(Status.EnPassant, 1);
-        PiecesValues.Add(Status.Knight, 3);
-        PiecesValues.Add(Status.Bishop, 3);
-        PiecesValues.Add(Status.Rook, 5);
-        PiecesValues.Add(Status.Queen, 9);
-    }
-    
     /// <summary>
-    /// Selects halfTurn from calculated condition. Calculation is done in parallel.
+    /// Selects half turn from calculated condition. Calculation is done in parallel.
     /// </summary>
-    public static HalfTurn? BestHalfTurn(CalculatedCondition calcCondition, Condition condition, int depth)
+    public static HalfTurn? FindBestHalfTurn(CalculatedCondition calculatedCondition, Condition condition, int depth)
     {
         InterruptHalfTurn = false;
-        var possibleHalfTurns = PossibleHalfTurns(calcCondition);
+        var possibleHalfTurns = GetPossibleHalfTurns(calculatedCondition);
 
         if (possibleHalfTurns.Count is 0)
         {
@@ -41,23 +41,21 @@ internal static class Emulator
 
         Parallel.For(0, possibleHalfTurns.Count, i =>
         {
-            BasicEvaluating(condition, possibleHalfTurns[i]);
+            Evaluate(condition, possibleHalfTurns[i]);
 
             Condition newCondition = new(condition);
             ChessEngine.MovePiece(possibleHalfTurns[i].From, possibleHalfTurns[i].To, newCondition);
             CalculatedCondition newCalculatedCondition = new(newCondition);
 
-            possibleHalfTurns[i].Value -= Minimax(newCalculatedCondition, newCondition, depth - 1);
+            possibleHalfTurns[i].Value -= GetMinimax(newCalculatedCondition, newCondition, depth - 1);
             Interlocked.Increment(ref ChessEngine.ProgressValueStatic);
         });
 
-        return InterruptHalfTurn ? null : BestHalfTurn(possibleHalfTurns);
+        return InterruptHalfTurn ? null : FindBestHalfTurn(possibleHalfTurns);
     }
 
-    /// <summary>
-    /// Finding the best moves and selecting one random of them.
-    /// </summary>
-    private static HalfTurn BestHalfTurn(IReadOnlyList<HalfTurn> possibleMoves)
+    // Finds the best moves and selecting one random of them.
+    private static HalfTurn FindBestHalfTurn(IReadOnlyList<HalfTurn> possibleMoves)
     {
         List<HalfTurn> bestMoves = new() {possibleMoves[0]};
 
@@ -75,11 +73,9 @@ internal static class Emulator
 
         return bestMoves[Random.Next(bestMoves.Count)];
     }
-
-    /// <summary>
-    /// Loads all possible moves of pieces.
-    /// </summary>
-    private static List<HalfTurn> PossibleHalfTurns(CalculatedCondition calculatedCondition)
+    
+    // Loads all possible moves of pieces.
+    private static List<HalfTurn> GetPossibleHalfTurns(CalculatedCondition calculatedCondition)
     {
         var result = (from piece in calculatedCondition.PiecesOnTurn
             from coords in piece.Value.PossibleMoves
@@ -87,29 +83,25 @@ internal static class Emulator
 
         return result;
     }
-
-    /// <summary>
-    /// Algorithm for finding the best move.
-    /// </summary>
-    /// <returns>Returns value of the best move.</returns>
-    private static int Minimax(CalculatedCondition calcCondition, Condition condition, int depth)
+    
+    // Finds the best move.
+    private static int GetMinimax(CalculatedCondition calculatedCondition, Condition condition, int depth)
     {
         if (InterruptHalfTurn)
         {
             return int.MaxValue;
         }
 
-        var possibleHalfTurns = PossibleHalfTurns(calcCondition);
+        var possibleHalfTurns = GetPossibleHalfTurns(calculatedCondition);
         var max = int.MinValue;
 
         if (depth is 0)
         {
             foreach (HalfTurn halfTurn in possibleHalfTurns)
             {
-                BasicEvaluating(condition, halfTurn);
+                Evaluate(condition, halfTurn);
                 
-                var possibleAttacks = CalculatedCondition
-                    .GetDataOfCalculatedSituation(condition)!
+                var possibleAttacks = CalculatedCondition.GetDataOfCalculatedSituation(condition)!
                     .EnemyPossibleAttacks.Contains(halfTurn.To);
 
                 if (possibleAttacks)
@@ -129,18 +121,18 @@ internal static class Emulator
 
         foreach (HalfTurn halfTurn in possibleHalfTurns)
         {
-            BasicEvaluating(condition, halfTurn);
+            Evaluate(condition, halfTurn);
 
             Condition newCondition = new(condition);
             ChessEngine.MovePiece(halfTurn.From, halfTurn.To, newCondition);
-            CalculatedCondition calculatedCondition = new(newCondition);
+            CalculatedCondition currentCalculatedCondition = new(newCondition);
 
-            if (calcCondition.DrawMate)
+            if (calculatedCondition.DrawMate)
             {
-                return calcCondition.Check ? 500 : 0;
+                return calculatedCondition.Check ? 500 : 0;
             }
 
-            halfTurn.Value -= Minimax(calculatedCondition, newCondition, depth - 1);
+            halfTurn.Value -= GetMinimax(currentCalculatedCondition, newCondition, depth - 1);
 
             if (halfTurn.Value > max)
             {
@@ -151,7 +143,7 @@ internal static class Emulator
         return max;
     }
 
-    private static void BasicEvaluating(Condition condition, HalfTurn halfTurn)
+    private static void Evaluate(Condition condition, HalfTurn halfTurn)
     {
         var toStatus = condition.Chessboard[halfTurn.To.Row, halfTurn.To.Column].Status;
         var fromStatus = condition.Chessboard[halfTurn.From.Row, halfTurn.From.Column].Status;

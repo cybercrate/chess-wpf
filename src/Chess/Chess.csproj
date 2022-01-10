@@ -9,7 +9,7 @@
         <UseWPF>true</UseWPF>
         <StartupObject>Chess.App</StartupObject>
         <PlatformTarget>x64</PlatformTarget>
-        <ApplicationIcon>Resources\Images\Icons\MainIcon.ico</ApplicationIcon>
+        <ApplicationIcon>Resources\Images\Icons\Main.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,17 +28,14 @@
     </ItemGroup>
         
     <ItemGroup>
-        <Resource Include="Resources\Images\Icons\BackIcon.png" />
-        <Resource Include="Resources\Images\Icons\ExitIcon.png" />
-        <Resource Include="Resources\Images\Icons\ForwardIcon.png" />
-        <Resource Include="Resources\Images\Icons\NewIcon.png" />
-        <Resource Include="Resources\Images\Icons\OpenIcon.png" />
-        <Resource Include="Resources\Images\Icons\SaveIcon.png" />
-        <Resource Include="Resources\Images\Icons\SettingsIcon.png" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="Resources\Images\Icons\MainIcon.ico" />
+        <Resource Include="Resources\Images\Icons\Back.png" />
+        <Resource Include="Resources\Images\Icons\Exit.png" />
+        <Resource Include="Resources\Images\Icons\Forward.png" />
+        <Resource Include="Resources\Images\Icons\New.png" />
+        <Resource Include="Resources\Images\Icons\Open.png" />
+        <Resource Include="Resources\Images\Icons\Save.png" />
+        <Resource Include="Resources\Images\Icons\Settings.png" />
+        <Resource Include="Resources\Images\Icons\Main.ico" />
     </ItemGroup>
 
     <ItemGroup>

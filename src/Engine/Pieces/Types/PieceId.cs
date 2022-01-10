@@ -1,7 +1,7 @@
 ﻿namespace Engine.Pieces.Types;
 
 /// <summary>
-/// Piece represented with a char and boolean (color).
+/// Represents piece identifier.
 /// </summary>
 public struct PieceId
 {

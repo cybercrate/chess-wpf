@@ -4,23 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="138" Width="512"
+        Height="120" Width="480"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None" ResizeMode="NoResize"
-        BorderBrush="Black" BorderThickness="1">
+        BorderBrush="Gray" BorderThickness="2">
+    
     <Grid PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button BorderThickness="0" Padding="0" Background="White" Name="RookButton"/>
-        <Button BorderThickness="0" Padding="0" Background="White" Grid.Column="1" Name="KnightButton"/>
-        <Button BorderThickness="0" Padding="0" Background="White" Grid.Column="2" Name="BishopButton"/>
-        <Button BorderThickness="0" Padding="0" Background="White" Grid.Column="3" Name="QueenButton"/>
+        
+        <Button BorderThickness="0"
+                Padding="0"
+                Background="White"
+                Name="RookButton" />
+        
+        <Button BorderThickness="0"
+                Padding="0"
+                Background="White"
+                Grid.Column="1"
+                Name="KnightButton" />
+        
+        <Button BorderThickness="0"
+                Padding="0"
+                Background="White"
+                Grid.Column="2"
+                Name="BishopButton" />
+        
+        <Button BorderThickness="0"
+                Padding="0"
+                Background="White"
+                Grid.Column="3"
+                Name="QueenButton" />
     </Grid>
 </Window>

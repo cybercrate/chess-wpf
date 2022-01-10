@@ -1,8 +1,9 @@
-﻿using Engine.ResourceManagement;
+﻿using Engine.Pieces.Types;
+using Engine.ResourceManagement;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Engine.Pieces.Types;
+using System.Windows.Media.Effects;
 
 namespace Chess.View;
 
@@ -16,8 +17,8 @@ public partial class PieceSelection
     public PieceSelection(double chessboardWidth, bool white)
     {
         InitializeComponent();
-        
-        Icon = IconLoader.GetImage(IconType.Main);
+
+        Icon = IconLoader.GetWindowImage();
         Height = chessboardWidth / 8 * 1.3 + 10;
         Width = chessboardWidth / 2 * 1.3 + 10;
 

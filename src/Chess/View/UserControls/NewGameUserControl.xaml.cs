@@ -31,10 +31,10 @@ public partial class NewGameUserControl
             HeaderTextBlock.Text = "Current game settings:";
         }
         
-        _playerWhitePieces = Settings.PlayerIsWhite;
+        _playerWhitePieces = Settings.WhiteIsPlayer;
         WhiteComboBox.SelectedIndex = _playerWhitePieces ? 0 : 1;
 
-        _playerBlackPieces = Settings.PlayerIsBlack;
+        _playerBlackPieces = Settings.BlackIsPlayer;
         BlackComboBox.SelectedIndex = _playerBlackPieces ? 0 : 1;
 
         _whiteDifficulty = Settings.WhiteDifficulty;
@@ -135,15 +135,15 @@ public partial class NewGameUserControl
 
     private void ConfirmButton_Click(object sender, RoutedEventArgs e)
     {
-        Settings.PlayerIsBlack = _playerBlackPieces;
-        Settings.PlayerIsWhite = _playerWhitePieces;
+        Settings.BlackIsPlayer = _playerBlackPieces;
+        Settings.WhiteIsPlayer = _playerWhitePieces;
         Settings.BlackDifficulty = _blackDifficulty;
         Settings.WhiteDifficulty = _whiteDifficulty;
         Settings.CalculationMinTime = _minCalculationTime;
         
         if (_newGame)
         {
-            Settings.NewGame = true;
+            Settings.IsNewGame = true;
         }
         
         _loadChessUserControl();

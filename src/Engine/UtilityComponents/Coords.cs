@@ -6,12 +6,12 @@
 public readonly struct Coords
 {
     /// <summary>
-    /// Row
+    /// Row.
     /// </summary>
     public sbyte Row { get; }
     
     /// <summary>
-    /// Column
+    /// Column.
     /// </summary>
     public sbyte Column { get; }
     

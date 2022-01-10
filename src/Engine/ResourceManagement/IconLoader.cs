@@ -6,31 +6,28 @@ public static class IconLoader
 {
     private const string RelativePath = $"{ResourcePath.ResourcesRelativePath}/Icons";
     
-    private const string Main = "MainIcon.ico";
-
-    private const string Back = "BackIcon.png";
-    private const string Exit = "ExitIcon.png";
-    private const string Forward = "ForwardIcon.png";
-    private const string New = "NewIcon.png";
-    private const string Open = "OpenIcon.png";
-    private const string Save = "SaveIcon.png";
-    private const string Settings = "SettingsIcon.png";
+    private const string Back = "Back.png";
+    private const string Exit = "Exit.png";
+    private const string Forward = "Forward.png";
+    private const string New = "New.png";
+    private const string Open = "Open.png";
+    private const string Save = "Save.png";
+    private const string Settings = "Settings.png";
     
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
+    private const string Window = "icon.ico";
+    
     public static BitmapImage GetImage(IconType type) => new(new Uri(GeneratePath(type), UriKind.Relative));
+    
+    public static BitmapImage GetWindowImage() => new(new Uri(Window, UriKind.Relative));
 
     private static string GeneratePath(IconType type)
     {
         var imageFile = type switch
         {
             IconType.Back => Back,
+            IconType.Executable => Window,
             IconType.Exit => Exit,
             IconType.Forward => Forward,
-            IconType.Main => Main,
             IconType.New => New,
             IconType.Open => Open,
             IconType.Save => Save,

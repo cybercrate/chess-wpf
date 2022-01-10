@@ -3,9 +3,9 @@
 public enum IconType
 {
     Back,
+    Executable,
     Exit,
     Forward,
-    Main,
     New,
     Open,
     Save,
