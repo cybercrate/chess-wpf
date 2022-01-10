@@ -34,7 +34,10 @@ public class Condition
             {
                 for (var column = 0; column < 8; column++)
                 {
-                    if (Chessboard[row, column].Status is Status.King && Chessboard[row, column].White == WhiteOnTurn)
+                    var status = Chessboard[row, column].Status;
+                    var color = Chessboard[row, column].PieceColor;
+                    
+                    if (status is Status.King && color is PieceColor.White == WhiteOnTurn)
                     {
                         return new Coords(row, column);
                     }
@@ -86,19 +89,19 @@ public class Condition
             {
                 Chessboard[row, column] = row switch
                 {
-                    1 => new PieceId(Status.Pawn, false),
-                    6 => new PieceId(Status.Pawn),
-                    0 when column is 0 or 7 => new PieceId(Status.Rook, false),
-                    7 when column is 0 or 7 => new PieceId(Status.Rook),
-                    0 when column is 6 or 1 => new PieceId(Status.Knight, false),
-                    7 when column is 6 or 1 => new PieceId(Status.Knight),
-                    0 when column is 5 or 2 => new PieceId(Status.Bishop, false),
-                    7 when column is 5 or 2 => new PieceId(Status.Bishop),
-                    0 when column is 3 => new PieceId(Status.Queen, false),
-                    7 when column is 3 => new PieceId(Status.Queen),
-                    0 when column is 4 => new PieceId(Status.King, false),
-                    7 when column is 4 => new PieceId(Status.King),
-                    _ => new PieceId(Status.Empty)
+                    1 => new PieceId(Status.Pawn, PieceColor.Black),
+                    6 => new PieceId(Status.Pawn, PieceColor.White),
+                    0 when column is 0 or 7 => new PieceId(Status.Rook, PieceColor.Black),
+                    7 when column is 0 or 7 => new PieceId(Status.Rook, PieceColor.White),
+                    0 when column is 6 or 1 => new PieceId(Status.Knight, PieceColor.Black),
+                    7 when column is 6 or 1 => new PieceId(Status.Knight, PieceColor.White),
+                    0 when column is 5 or 2 => new PieceId(Status.Bishop, PieceColor.Black),
+                    7 when column is 5 or 2 => new PieceId(Status.Bishop, PieceColor.White),
+                    0 when column is 3 => new PieceId(Status.Queen, PieceColor.Black),
+                    7 when column is 3 => new PieceId(Status.Queen, PieceColor.White),
+                    0 when column is 4 => new PieceId(Status.King, PieceColor.Black),
+                    7 when column is 4 => new PieceId(Status.King, PieceColor.White),
+                    _ => new PieceId(Status.Empty, PieceColor.None)
                 };
             }
         }
@@ -138,7 +141,7 @@ public class Condition
                     
                 sb.Append(row);
                 sb.Append(column);
-                sb.Append(Chessboard[row, column].White ? Token.White : Token.Black);
+                sb.Append(Chessboard[row, column].PieceColor is PieceColor.White ? Token.White : Token.Black);
                 sb.Append(Chessboard[row, column].Status);
             }
         }

@@ -5,9 +5,9 @@ using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class Knight : Piece
+internal sealed class Knight : Piece
 {
-    public Knight(bool white) : base(white)
+    public Knight(PieceColor color) : base(color)
     {
     }
 
@@ -25,7 +25,7 @@ internal class Knight : Piece
         Coords processedCoords;
 
         Status status;
-        bool white;
+        PieceColor color;
 
         // Top side.
         if (coords.Row > 1 && coords.Column > 0)
@@ -33,9 +33,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row - 2, coords.Column - 1);
             
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
 
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -46,9 +46,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row - 2, coords.Column + 1);
 
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -60,9 +60,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row + 2, coords.Column - 1);
 
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -73,9 +73,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row + 2, coords.Column + 1);
 
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -87,9 +87,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row - 1, coords.Column - 2);
             
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -100,9 +100,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row + 1, coords.Column - 2);
             
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -114,9 +114,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row - 1, coords.Column + 2);
             
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }
@@ -127,9 +127,9 @@ internal class Knight : Piece
             processedCoords = new Coords(coords.Row + 1, coords.Column + 2);
             
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
 
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleMoves.Add(processedCoords);
             }

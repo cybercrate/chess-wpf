@@ -31,10 +31,10 @@ public static class ImageLoader
     /// 
     /// </summary>
     /// <param name="status"></param>
-    /// <param name="white"></param>
+    /// <param name="color"></param>
     /// <returns></returns>
-    public static BitmapImage GetImage(Status status, bool white) =>
-        new(new Uri(GeneratePath(status, white), UriKind.Relative));
+    public static BitmapImage GetImage(Status status, PieceColor color) =>
+        new(new Uri(GeneratePath(status, color), UriKind.Relative));
 
     /// <summary>
     /// 
@@ -68,19 +68,19 @@ public static class ImageLoader
     /// 
     /// </summary>
     /// <param name="status"></param>
-    /// <param name="white"></param>
+    /// <param name="color"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private static string GeneratePath(Status status, bool white)
+    private static string GeneratePath(Status status, PieceColor color)
     {
         var imageSource = status switch
         {
-            Status.Pawn or Status.EnPassant => white ? PawnWhite : PawnBlack,
-            Status.Rook => white ? RookWhite : RookBlack,
-            Status.Knight => white ? KnightWhite : KnightBlack,
-            Status.Bishop => white ? BishopWhite : BishopBlack,
-            Status.Queen => white ? QueenWhite : QueenBlack,
-            Status.King => white ? KingWhite : KingBlack,
+            Status.Pawn or Status.EnPassant => color is PieceColor.White ? PawnWhite : PawnBlack,
+            Status.Rook => color is PieceColor.White ? RookWhite : RookBlack,
+            Status.Knight => color is PieceColor.White ? KnightWhite : KnightBlack,
+            Status.Bishop => color is PieceColor.White ? BishopWhite : BishopBlack,
+            Status.Queen => color is PieceColor.White ? QueenWhite : QueenBlack,
+            Status.King => color is PieceColor.White ? KingWhite : KingBlack,
             _ => throw new Exception()
         };
 

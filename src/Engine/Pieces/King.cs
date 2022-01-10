@@ -5,14 +5,14 @@ using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class King : Piece
+internal sealed class King : Piece
 {
     /// <summary>
     /// The king needs to know all possible enemy attack to know where he can move.
     /// </summary>
     public HashSet<Coords> PossibleEnemyAttacks { get; set; } = null!;
 
-    public King(bool white) : base(white)
+    public King(PieceColor color) : base(color)
     {
     }
 
@@ -33,16 +33,16 @@ internal class King : Piece
         Coords processedCoords = new(coords.Row, coords.Column - 1);
 
         Status status;
-        bool white;
+        PieceColor color;
         bool possibleEnemyAttack;
 
         // Left.
         if (coords.Column > 0)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -59,9 +59,9 @@ internal class King : Piece
         if (coords.Column > 0 && coords.Row > 0)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -78,9 +78,9 @@ internal class King : Piece
         if (coords.Row > 0)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -97,9 +97,9 @@ internal class King : Piece
         if (coords.Column < 7 && coords.Row > 0)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -116,9 +116,9 @@ internal class King : Piece
         if (coords.Column < 7)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -135,9 +135,9 @@ internal class King : Piece
         if (coords.Column < 7 && coords.Row < 7)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -154,9 +154,9 @@ internal class King : Piece
         if (coords.Row < 7)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -173,9 +173,9 @@ internal class King : Piece
         if (coords.Column > 0 && coords.Row < 7)
         {
             status = condition.Chessboard[processedCoords.Row, processedCoords.Column].Status;
-            white = condition.Chessboard[processedCoords.Row, processedCoords.Column].White;
+            color = condition.Chessboard[processedCoords.Row, processedCoords.Column].PieceColor;
             
-            if (status is Status.Empty or Status.EnPassant || white != White)
+            if (status is Status.Empty or Status.EnPassant || color != PieceColor)
             {
                 possibleEnemyAttack = PossibleEnemyAttacks.Contains(processedCoords);
                 
@@ -189,7 +189,7 @@ internal class King : Piece
         // Castling is possible only of the king is not in check.
         if (check is false)
         {
-            if (White)
+            if (PieceColor is PieceColor.White)
             {
                 if (condition.WhiteKingMoved is false)
                 {

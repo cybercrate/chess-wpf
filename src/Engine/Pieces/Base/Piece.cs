@@ -1,4 +1,5 @@
 ﻿using Engine.Conditions;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces.Base;
@@ -11,7 +12,7 @@ internal abstract class Piece: IPiece
     /// <summary>
     /// Piece color
     /// </summary>
-    public bool White { get; }
+    public PieceColor PieceColor { get; }
     
     /// <summary>
     /// Indicates whether the piece protects king from check
@@ -34,7 +35,7 @@ internal abstract class Piece: IPiece
     /// </summary>
     public Coords[] PossibleAttacks { get; protected set; } = null!;
 
-    protected Piece(bool white) => White = white;
+    protected Piece(PieceColor color) => PieceColor = color;
 
     /// <summary>
     /// Updates possible moves based on check condition.

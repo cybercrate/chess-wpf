@@ -13,16 +13,16 @@ public struct PieceId
     /// <summary>
     /// true - white piece, false - black piece.
     /// </summary>
-    public bool White { get; set; }
-    
+    public PieceColor PieceColor { get; set; }
+
     /// <summary>
     /// Square constructor.
     /// </summary>
     /// <param name="status"></param>
-    /// <param name="white">Piece color.</param>
-    public PieceId(Status status, bool white = true)
+    /// <param name="color">Piece color.</param>
+    public PieceId(Status status, PieceColor color)
     {
         Status = status;
-        White = white;
+        PieceColor = color;
     }
 }

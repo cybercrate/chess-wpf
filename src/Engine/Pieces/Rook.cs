@@ -5,9 +5,9 @@ using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class Rook : MovablePiece
+internal sealed class Rook : MovablePiece
 {
-    public Rook(bool white) : base(white)
+    public Rook(PieceColor color) : base(color)
     {
     }
         
@@ -22,7 +22,7 @@ internal class Rook : MovablePiece
         }
 
         Status status;
-        bool white;
+        PieceColor color;
         
         // Left side.
         for (var column = (sbyte)(coords.Column - 1); column >= 0; column--)
@@ -37,10 +37,10 @@ internal class Rook : MovablePiece
             // Square has a piece.
             else
             {
-                white = condition.Chessboard[coords.Row, column].White;
+                color = condition.Chessboard[coords.Row, column].PieceColor;
                 
                 // Piece is enemy.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     possibleMoves.Add(new Coords(coords.Row, column));
                 }
@@ -62,10 +62,10 @@ internal class Rook : MovablePiece
             // Square has a piece.
             else
             {
-                white = condition.Chessboard[coords.Row, column].White;
+                color = condition.Chessboard[coords.Row, column].PieceColor;
                 
                 // Piece is enemy.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     possibleMoves.Add(new Coords(coords.Row, column));
                 }
@@ -87,10 +87,10 @@ internal class Rook : MovablePiece
             // Square has a piece.
             else
             {
-                white = condition.Chessboard[row, coords.Column].White;
+                color = condition.Chessboard[row, coords.Column].PieceColor;
                 
                 // Piece is enemy.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     possibleMoves.Add(new Coords(row, coords.Column));
                 }
@@ -112,10 +112,10 @@ internal class Rook : MovablePiece
             // Square has a piece.
             else
             {
-                white = condition.Chessboard[row, coords.Column].White;
+                color = condition.Chessboard[row, coords.Column].PieceColor;
                 
                 // Piece is enemy.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     possibleMoves.Add(new Coords(row, coords.Column));
                 }
@@ -148,7 +148,7 @@ internal class Rook : MovablePiece
         List<Coords> possibleAttacks = new();
 
         Status status;
-        bool white;
+        PieceColor color;
         
         // Left side.
         for (var column = (sbyte)(coords.Column - 1); column >= 0; column--)
@@ -165,10 +165,10 @@ internal class Rook : MovablePiece
             {
                 possibleAttacks.Add(new Coords(coords.Row, column));
 
-                white = condition.Chessboard[coords.Row, column].White;
+                color = condition.Chessboard[coords.Row, column].PieceColor;
                 
                 // Checking whether there is enemy king behind the enemy piece.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     // Continuing in row after finding the 2nd piece.
                     for (var innerColumn = (sbyte)(column - 1); innerColumn >= 0; innerColumn--)
@@ -184,10 +184,10 @@ internal class Rook : MovablePiece
                         // King found.
                         if (status is Status.King)
                         {
-                            white = condition.Chessboard[coords.Row, innerColumn].White;
+                            color = condition.Chessboard[coords.Row, innerColumn].PieceColor;
                             
                             // Enemy king.
-                            if (white != White)
+                            if (color != PieceColor)
                             {
                                 PieceProtectingKingCoords = new Coords(coords.Row, column);
                             }
@@ -218,10 +218,10 @@ internal class Rook : MovablePiece
             {
                 possibleAttacks.Add(new Coords(coords.Row, column));
 
-                white = condition.Chessboard[coords.Row, column].White;
+                color = condition.Chessboard[coords.Row, column].PieceColor;
                 
                 // Checking whether there is enemy king behind the enemy piece.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     // Continuing in row after finding the 2nd piece.
                     for (var innerColumn = (sbyte)(column + 1); innerColumn < 8; innerColumn++)
@@ -237,10 +237,10 @@ internal class Rook : MovablePiece
                         // King found.
                         if (status is Status.King)
                         {
-                            white = condition.Chessboard[coords.Row, innerColumn].White;
+                            color = condition.Chessboard[coords.Row, innerColumn].PieceColor;
                             
                             // Enemy king.
-                            if (white != White)
+                            if (color != PieceColor)
                             {
                                 PieceProtectingKingCoords = new Coords(coords.Row, column);
                             }
@@ -271,10 +271,10 @@ internal class Rook : MovablePiece
             {
                 possibleAttacks.Add(new Coords(row, coords.Column));
 
-                white = condition.Chessboard[row, coords.Column].White;
+                color = condition.Chessboard[row, coords.Column].PieceColor;
                 
                 // Checking whether there is enemy king behind the enemy piece.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     // Continuing in row after finding the 2nd piece.
                     for (var innerRow = (sbyte)(row - 1); innerRow >= 0; innerRow--)
@@ -290,10 +290,10 @@ internal class Rook : MovablePiece
                         // King found.
                         if (status is Status.King)
                         {
-                            white = condition.Chessboard[innerRow, coords.Column].White;
+                            color = condition.Chessboard[innerRow, coords.Column].PieceColor;
                             
                             // Enemy king.
-                            if (white != White)
+                            if (color != PieceColor)
                             {
                                 PieceProtectingKingCoords = new Coords(row, coords.Column);
                             }
@@ -323,10 +323,10 @@ internal class Rook : MovablePiece
             {
                 possibleAttacks.Add(new Coords(row, coords.Column));
 
-                white = condition.Chessboard[row, coords.Column].White;
+                color = condition.Chessboard[row, coords.Column].PieceColor;
                 
                 // Checking whether there is enemy king behind the enemy piece.
-                if (white != White)
+                if (color != PieceColor)
                 {
                     // Continuing in row after finding the 2nd piece
                     for (var innerRow = (sbyte)(row + 1); innerRow < 8; innerRow++)
@@ -342,10 +342,10 @@ internal class Rook : MovablePiece
                         // King found.
                         if (status is Status.King)
                         {
-                            white = condition.Chessboard[innerRow, coords.Column].White;
+                            color = condition.Chessboard[innerRow, coords.Column].PieceColor;
                             
                             // Enemy king.
-                            if (white != White)
+                            if (color != PieceColor)
                             {
                                 PieceProtectingKingCoords = new Coords(row, coords.Column);
                             }

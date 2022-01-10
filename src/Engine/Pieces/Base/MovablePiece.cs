@@ -1,4 +1,5 @@
-﻿using Engine.UtilityComponents;
+﻿using Engine.Pieces.Types;
+using Engine.UtilityComponents;
 
 namespace Engine.Pieces.Base;
 
@@ -10,7 +11,7 @@ internal abstract class MovablePiece : Piece
     /// </summary>
     public Coords PieceProtectingKingCoords { get; set; }
 
-    protected MovablePiece(bool white) : base(white)
+    protected MovablePiece(PieceColor color) : base(color)
     {
     }
 }

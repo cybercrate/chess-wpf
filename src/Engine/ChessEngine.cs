@@ -40,7 +40,7 @@ public class ChessEngine : INotifyPropertyChanged
     // Menu button for previous turn.
     private readonly MenuItem _forward;
     
-    // White lost pieces.
+    // PieceColor lost pieces.
     private readonly WrapPanel _whiteLost;
     
     // Black lost pieces.
@@ -223,8 +223,8 @@ public class ChessEngine : INotifyPropertyChanged
                         condition.Chessboard[from.Row + 1, from.Column].Status = Status.EnPassant;
                         
                         // Setting pawn color to square for taking en passant.
-                        condition.Chessboard[from.Row + 1, from.Column].White =
-                            condition.Chessboard[from.Row, from.Column].White;
+                        condition.Chessboard[from.Row + 1, from.Column].PieceColor =
+                            condition.Chessboard[from.Row, from.Column].PieceColor;
                     }
                     // If positive, a black pawn was moved.
                     else 
@@ -233,8 +233,8 @@ public class ChessEngine : INotifyPropertyChanged
                         condition.Chessboard[from.Row - 1, from.Column].Status = Status.EnPassant;
                         
                         // Setting pawn color to square for taking en passant.
-                        condition.Chessboard[from.Row - 1, from.Column].White =
-                            condition.Chessboard[from.Row, from.Column].White;
+                        condition.Chessboard[from.Row - 1, from.Column].PieceColor =
+                            condition.Chessboard[from.Row, from.Column].PieceColor;
                     }
                 }
 
@@ -275,7 +275,7 @@ public class ChessEngine : INotifyPropertyChanged
             case Status.King:
             {
                 // Castling.
-                if (condition.Chessboard[from.Row, from.Column].White)
+                if (condition.Chessboard[from.Row, from.Column].PieceColor is PieceColor.White)
                 {
                     condition.WhiteKingMoved = true;
                 }
@@ -422,12 +422,12 @@ public class ChessEngine : INotifyPropertyChanged
         }
 
         var status = _condition.Chessboard[coords.Row, coords.Column].Status;
-        var white = _condition.Chessboard[coords.Row, coords.Column].White;
+        var color = _condition.Chessboard[coords.Row, coords.Column].PieceColor is PieceColor.White;
 
         if (_selectedCoords is null)
         {
             // If the square contains a piece of player that is on turn...
-            if (status is Status.Empty or Status.EnPassant || white != _condition.WhiteOnTurn)
+            if (status is Status.Empty or Status.EnPassant || color != _condition.WhiteOnTurn)
             {
                 return;
             }
@@ -483,10 +483,10 @@ public class ChessEngine : INotifyPropertyChanged
                     _selectedCoords = null;
 
                     status = _condition.Chessboard[coords.Row, coords.Column].Status;
-                    white = _condition.Chessboard[coords.Row, coords.Column].White;
+                    color = _condition.Chessboard[coords.Row, coords.Column].PieceColor is PieceColor.White;
                     
                     // If the square contains piece of player that is on turn...
-                    if (status is not Status.Empty and not Status.EnPassant && white == _condition.WhiteOnTurn)
+                    if (status is not Status.Empty and not Status.EnPassant && color == _condition.WhiteOnTurn)
                     {
                         SelectPossibleMoves(coords);
                     }
@@ -520,10 +520,10 @@ public class ChessEngine : INotifyPropertyChanged
             // It isn't en passant, or it is but a pawn is taken by a pawn.
             if (toStatus is not Status.EnPassant || fromStatus is Status.Pawn)
             {
-                var white = _condition.Chessboard[to.Row, to.Column].White;
+                var color = _condition.Chessboard[to.Row, to.Column].PieceColor;
                 
                 // Graphical representation of taken piece.
-                if (white)
+                if (color is PieceColor.White)
                 {
                     // Removing text block if it's still there.
                     if (_whiteLost.Children[0] is TextBlock)
@@ -560,8 +560,8 @@ public class ChessEngine : INotifyPropertyChanged
             {
                 if (to.Row is 7 or 0)
                 {
-                    var white = _condition.Chessboard[to.Row, to.Column].White;
-                    var options = _openPromotionOptions(white);
+                    var color = _condition.Chessboard[to.Row, to.Column].PieceColor is PieceColor.White;
+                    var options = _openPromotionOptions(color);
                     
                     _condition.Chessboard[to.Row, to.Column].Status = options;
                 }
@@ -617,13 +617,13 @@ public class ChessEngine : INotifyPropertyChanged
                         {
                             // Calculating white and black pieces in the current condition.
                             var whiteCurrentCount = _condition.Chessboard.Cast<PieceId>()
-                                .Where(id => id.Status is not Status.Empty && id.Status is not Status.EnPassant)
-                                .Count(id => id.White);
+                                .Where(id => id.Status is not Status.Empty and not Status.EnPassant)
+                                .Count(id => id.PieceColor is PieceColor.White);
 
                             // Calculating white and black pieces in the previous condition.
                             var whitePreviousCount = previousSituation.Chessboard.Cast<PieceId>()
-                                .Where(id => id.Status is not Status.Empty && id.Status is not Status.EnPassant)
-                                .Count(id => id.White);
+                                .Where(id => id.Status is not Status.Empty and not Status.EnPassant)
+                                .Count(id => id.PieceColor is PieceColor.White);
 
                             // Removing taken piece from wrap panel of the taken piece.
                             var taken = whitePreviousCount > whiteCurrentCount ? _whiteLost : _blackLost;
@@ -696,13 +696,13 @@ public class ChessEngine : INotifyPropertyChanged
                         // Returning taken piece.
                         if (_condition.ToString().Length > futureSituation.ToString().Length)
                         {
-                            // White pieces in current check condition.
+                            // PieceColor pieces in current check condition.
                             List<PieceId> whiteCurrent = new();
 
                             // Black pieces in current check condition.
                             List<PieceId> blackCurrent = new();
 
-                            // White pieces in future check condition.
+                            // PieceColor pieces in future check condition.
                             List<PieceId> whiteFuture = new();
 
                             // Black pieces in future check condition.
@@ -716,7 +716,7 @@ public class ChessEngine : INotifyPropertyChanged
                                     continue;
                                 }
 
-                                if (id.White)
+                                if (id.PieceColor is PieceColor.White)
                                 {
                                     whiteCurrent.Add(id);
                                 }
@@ -734,7 +734,7 @@ public class ChessEngine : INotifyPropertyChanged
                                     continue;
                                 }
 
-                                if (id.White)
+                                if (id.PieceColor is PieceColor.White)
                                 {
                                     whiteFuture.Add(id);
                                 }
@@ -745,7 +745,7 @@ public class ChessEngine : INotifyPropertyChanged
                             }
 
                             WrapPanel taken;
-                            var takenPc = new PieceId(Status.Empty);
+                            var takenPc = new PieceId(Status.Empty, PieceColor.None);
 
                             // Finding taken piece.
                             if (whiteCurrent.Count > whiteFuture.Count)
@@ -1205,15 +1205,15 @@ public class ChessEngine : INotifyPropertyChanged
     /// <summary>
     /// Generates piece image.
     /// </summary>
-    /// <param name="pc">Based on square it generates the respective image of the piece</param>
+    /// <param name="id">Based on square it generates the respective image of the piece</param>
     /// <param name="forWrapPanel">Whether to generate the image for the wrap panel of lost pieces</param>
     /// <returns></returns>
-    private Image GeneratePieceImage(PieceId pc, bool forWrapPanel = false)
+    private Image GeneratePieceImage(PieceId id, bool forWrapPanel = false)
     {
         var image = new Image
         {
             IsHitTestVisible = false,
-            Tag = pc
+            Tag = id
         };
         
         image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
@@ -1223,7 +1223,7 @@ public class ChessEngine : INotifyPropertyChanged
             image.Height = ImageSizeWrapPanel;
         }
 
-        image.Source = ImageLoader.GetImage(pc.Status, pc.White);
+        image.Source = ImageLoader.GetImage(id.Status, id.PieceColor);
         return image;
     }
 

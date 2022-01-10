@@ -1,11 +1,12 @@
 ﻿using Engine.Conditions;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces.Base;
 
 internal interface IPiece
 {
-    bool White { get; }
+    PieceColor PieceColor { get; }
         
     Coords[] PossibleMoves { get; }
         

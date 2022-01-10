@@ -94,7 +94,7 @@ internal class File
         {
             for (var charNumber = 0; charNumber < lineText.Length; charNumber += 2)
             {
-                BlackTaken.Add(new PieceId(ToStatus(lineText[charNumber]), false));
+                BlackTaken.Add(new PieceId(ToStatus(lineText[charNumber]), PieceColor.Black));
             }
         }
 
@@ -104,7 +104,7 @@ internal class File
         {
             for (var charNumber = 0; charNumber < lineText.Length; charNumber += 2)
             {
-                WhiteTaken.Add(new PieceId(ToStatus(lineText[charNumber])));
+                WhiteTaken.Add(new PieceId(ToStatus(lineText[charNumber]), PieceColor.White));
             }
         }
 
@@ -146,7 +146,9 @@ internal class File
                 else
                 {
                     tw.Write(ToChar(condition.Chessboard[row, column].Status));
-                    tw.Write(condition.Chessboard[row, column].White ? Token.White : Token.Black);
+                    tw.Write(condition.Chessboard[row, column].PieceColor is PieceColor.White
+                        ? Token.White
+                        : Token.Black);
                 }
             }
             
@@ -189,12 +191,14 @@ internal class File
                     return null;
                 }
                 
-                condition.Chessboard[row, column] = new PieceId(ToStatus(firstChar));
+                condition.Chessboard[row, column] = new PieceId(ToStatus(firstChar), PieceColor.White);
                 
                 if (firstChar is not Token.Empty)
                 {
                     firstChar = (char)tr.Read();
-                    condition.Chessboard[row, column].White = firstChar is Token.White;
+                    
+                    condition.Chessboard[row, column].PieceColor =
+                        firstChar is Token.White ? PieceColor.White : PieceColor.Black;
                 }
                 else
                 {

@@ -5,9 +5,9 @@ using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class Pawn : Piece
+internal sealed class Pawn : Piece
 {
-    public Pawn(bool white) : base(white)
+    public Pawn(PieceColor color) : base(color)
     {
     }
 
@@ -16,7 +16,7 @@ internal class Pawn : Piece
         List<Coords> possibleMoves = new();
 
         Status status;
-        bool white;
+        PieceColor color;
         
         if (condition.Draw50 > 99)
         {
@@ -26,7 +26,7 @@ internal class Pawn : Piece
         
         // Loading all possible moves.
         // The piece is black and moves down.
-        if (White is false) 
+        if (PieceColor is PieceColor.Black) 
         {
             // Checking whether the pawn isn't in the last row.
             if (coords.Row is not 7)
@@ -59,10 +59,10 @@ internal class Pawn : Piece
                     // On the left attack square is a piece?
                     if (status is not Status.Empty)
                     {
-                        white = condition.Chessboard[coords.Row + 1, coords.Column - 1].White;
+                        color = condition.Chessboard[coords.Row + 1, coords.Column - 1].PieceColor;
                         
                         // Piece is enemy.
-                        if (white != White)
+                        if (color != PieceColor)
                         {
                             possibleMoves.Add(new Coords(coords.Row + 1, coords.Column - 1));
                         }
@@ -77,10 +77,10 @@ internal class Pawn : Piece
                     // On the right attack square is a piece?
                     if (status is not Status.Empty)
                     {
-                        white = condition.Chessboard[coords.Row + 1, coords.Column + 1].White;
+                        color = condition.Chessboard[coords.Row + 1, coords.Column + 1].PieceColor;
                         
                         // Piece is enemy.
-                        if (white != White)
+                        if (color != PieceColor)
                         {
                             possibleMoves.Add(new Coords(coords.Row + 1, coords.Column + 1));
                         }
@@ -122,10 +122,10 @@ internal class Pawn : Piece
                     // On the left attack square is a piece?
                     if (status is not Status.Empty)
                     {
-                        white = condition.Chessboard[coords.Row - 1, coords.Column - 1].White;
+                        color = condition.Chessboard[coords.Row - 1, coords.Column - 1].PieceColor;
                         
                         // Piece is enemy.
-                        if (white != White)
+                        if (color != PieceColor)
                         {
                             possibleMoves.Add(new Coords(coords.Row - 1, coords.Column - 1));
                         }
@@ -140,10 +140,10 @@ internal class Pawn : Piece
                     // On the right attack square is a piece?
                     if (status is not Status.Empty)
                     {
-                        white = condition.Chessboard[coords.Row - 1, coords.Column + 1].White;
+                        color = condition.Chessboard[coords.Row - 1, coords.Column + 1].PieceColor;
                         
                         // Piece is enemy.
-                        if (white != White)
+                        if (color != PieceColor)
                         {
                             possibleMoves.Add(new Coords(coords.Row - 1, coords.Column + 1));
                         }
@@ -175,7 +175,7 @@ internal class Pawn : Piece
         List<Coords> possibleAttacks = new();
         
         // The piece is black and moves down.
-        if (White is false) 
+        if (PieceColor is PieceColor.Black) 
         {
             // Checking whether the pawn isn't in the last row.
             if (coords.Row is not 7)

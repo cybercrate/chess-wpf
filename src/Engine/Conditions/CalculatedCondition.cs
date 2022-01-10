@@ -51,9 +51,9 @@ internal class CalculatedCondition
                     IPiece piece;
                     
                     var status = condition.Chessboard[row, column].Status;
-                    var white = condition.Chessboard[row, column].White;
+                    var color = condition.Chessboard[row, column].PieceColor is PieceColor.White;
 
-                    if (white != whiteOnTurn || status is Status.Empty or Status.EnPassant)
+                    if (color != whiteOnTurn || status is Status.Empty or Status.EnPassant)
                     {
                         continue;
                     }
@@ -61,18 +61,18 @@ internal class CalculatedCondition
                     // Getting type of piece and adding it into dictionary.
                     if (status is Status.King)
                     {
-                        piece = new King(condition.Chessboard[row, column].White);
-                        kingCoords = new Coords((sbyte)row, (sbyte)column);
+                        piece = new King(condition.Chessboard[row, column].PieceColor);
+                        kingCoords = new Coords(row, column);
                     }
                     else
                     {
                         piece = status switch
                         {
-                            Status.Pawn => new Pawn(white),
-                            Status.Rook => new Rook(white),
-                            Status.Knight => new Knight(white),
-                            Status.Bishop => new Bishop(white),
-                            Status.Queen => new Queen(white),
+                            Status.Pawn => new Pawn(color ? PieceColor.White : PieceColor.Black),
+                            Status.Rook => new Rook(color ? PieceColor.White : PieceColor.Black),
+                            Status.Knight => new Knight(color ? PieceColor.White : PieceColor.Black),
+                            Status.Bishop => new Bishop(color ? PieceColor.White : PieceColor.Black),
+                            Status.Queen => new Queen(color ? PieceColor.White : PieceColor.Black),
                             _ => throw new Exception("Unexpected status.")
                         };
                     }
@@ -93,7 +93,7 @@ internal class CalculatedCondition
                     IPiece piece;
 
                     var status = condition.Chessboard[row, column].Status;
-                    var white = condition.Chessboard[row, column].White;
+                    var color = condition.Chessboard[row, column].PieceColor is PieceColor.White;
 
                     switch (status)
                     {
@@ -102,9 +102,9 @@ internal class CalculatedCondition
                             continue;
                         case Status.King:
                         {
-                            piece = new King(white);
+                            piece = new King(color ? PieceColor.White : PieceColor.Black);
                         
-                            if (piece.White == whiteOnTurn)
+                            if (piece.PieceColor is PieceColor.White == whiteOnTurn)
                             {
                                 kingCoords = new Coords(row, column);
                             }
@@ -115,11 +115,11 @@ internal class CalculatedCondition
                         {
                             piece = status switch
                             {
-                                Status.Pawn => new Pawn(white),
-                                Status.Rook => new Rook(white),
-                                Status.Knight => new Knight(white),
-                                Status.Bishop => new Bishop(white),
-                                Status.Queen => new Queen(white),
+                                Status.Pawn => new Pawn(color ? PieceColor.White : PieceColor.Black),
+                                Status.Rook => new Rook(color ? PieceColor.White : PieceColor.Black),
+                                Status.Knight => new Knight(color ? PieceColor.White : PieceColor.Black),
+                                Status.Bishop => new Bishop(color ? PieceColor.White : PieceColor.Black),
+                                Status.Queen => new Queen(color ? PieceColor.White : PieceColor.Black),
                                 _ => throw new Exception("Unexpected status.")
                             };
 
@@ -128,7 +128,7 @@ internal class CalculatedCondition
                     }
                     
                     // If the piece is on turn...
-                    if (piece.White == whiteOnTurn)
+                    if (piece.PieceColor is PieceColor.White == whiteOnTurn)
                     {
                         PiecesOnTurn.Add(new Coords(row, column), piece);
                     }
@@ -219,26 +219,27 @@ internal class CalculatedCondition
             for (sbyte column = 0; column < 8; column++)
             {
                 var status = condition.Chessboard[row, column].Status;
-                var white = condition.Chessboard[row, column].White;
 
                 if (status is Status.Empty or Status.EnPassant)
                 {
                     continue;
                 }
                 
+                var color = condition.Chessboard[row, column].PieceColor is PieceColor.White;
+                
                 // Getting piece type and calculations.
                 IPiece piece = status switch
                 {
-                    Status.Pawn => new Pawn(white),
-                    Status.Rook => new Rook(white),
-                    Status.Knight => new Knight(white),
-                    Status.Bishop => new Bishop(white),
-                    Status.Queen => new Queen(white),
-                    Status.King => new King(white),
+                    Status.Pawn => new Pawn(color ? PieceColor.White : PieceColor.Black),
+                    Status.Rook => new Rook(color ? PieceColor.White : PieceColor.Black),
+                    Status.Knight => new Knight(color ? PieceColor.White : PieceColor.Black),
+                    Status.Bishop => new Bishop(color ? PieceColor.White : PieceColor.Black),
+                    Status.Queen => new Queen(color ? PieceColor.White : PieceColor.Black),
+                    Status.King => new King(color ? PieceColor.White : PieceColor.Black),
                     _ => throw new Exception("Unexpected status.")
                 };
 
-                if (white == condition.WhiteOnTurn)
+                if (color == condition.WhiteOnTurn)
                 {
                     continue;
                 }

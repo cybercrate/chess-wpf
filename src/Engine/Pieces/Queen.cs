@@ -1,12 +1,13 @@
 ﻿using Engine.Conditions;
 using Engine.Pieces.Base;
+using Engine.Pieces.Types;
 using Engine.UtilityComponents;
 
 namespace Engine.Pieces;
 
-internal class Queen : MovablePiece
+internal sealed class Queen : MovablePiece
 {
-    public Queen(bool white) : base(white)
+    public Queen(PieceColor color) : base(color)
     {
     }
         
@@ -20,10 +21,10 @@ internal class Queen : MovablePiece
             return;
         }
         
-        Rook rook = new(White);
+        Rook rook = new(PieceColor);
         rook.UpdatePossibleMoves(condition, check, coords);
         
-        Bishop bishop = new(White);
+        Bishop bishop = new(PieceColor);
         bishop.UpdatePossibleMoves(condition, check, coords);
         
         possibleMoves.AddRange(rook.PossibleMoves);
@@ -52,7 +53,7 @@ internal class Queen : MovablePiece
         PieceProtectingKingCoords = new Coords(8, 8);
         List<Coords> possibleAttacks = new();
         
-        Rook rook = new(White);
+        Rook rook = new(PieceColor);
         rook.UpdatePossibleAttacks(condition, coords);
         
         if (rook.PieceProtectingKingCoords.Row is not 8)
@@ -60,7 +61,7 @@ internal class Queen : MovablePiece
             PieceProtectingKingCoords = rook.PieceProtectingKingCoords;
         }
         
-        Bishop bishop = new(White);
+        Bishop bishop = new(PieceColor);
         bishop.UpdatePossibleAttacks(condition, coords);
         
         if (bishop.PieceProtectingKingCoords.Row is not 8)
