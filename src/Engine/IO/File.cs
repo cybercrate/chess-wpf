@@ -49,24 +49,24 @@ internal class File
         WriteBasicData(sw, Condition);
         
         // Writing taken pieces into 11th and 12th line.
-        foreach (PieceId pieceId in BlackTaken)
+        foreach (var id in BlackTaken)
         {
-            sw.Write(ToChar(pieceId.Status));
+            sw.Write(ToChar(id.Status));
             sw.Write(Token.Black);
         }
         
         sw.WriteLine();
         
-        foreach (PieceId pieceId in WhiteTaken)
+        foreach (var id in WhiteTaken)
         {
-            sw.Write(ToChar(pieceId.Status));
+            sw.Write(ToChar(id.Status));
             sw.Write(Token.White);
         }
         
         sw.WriteLine();
 
         // Writing moves history into 13th to n-th line.
-        foreach (Condition condition in History)
+        foreach (var condition in History)
         {
             WriteBasicData(sw, condition);
         }

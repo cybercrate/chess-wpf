@@ -13,33 +13,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Resource Include="Resources\Images\Chessmen\BishopBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\BishopWhite.png" />
-        <Resource Include="Resources\Images\Chessmen\KingBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\KingWhite.png" />
-        <Resource Include="Resources\Images\Chessmen\KnightBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\KnightWhite.png" />
-        <Resource Include="Resources\Images\Chessmen\PawnBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\PawnWhite.png" />
-        <Resource Include="Resources\Images\Chessmen\QueenBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\QueenWhite.png" />
-        <Resource Include="Resources\Images\Chessmen\RookBlack.png" />
-        <Resource Include="Resources\Images\Chessmen\RookWhite.png" />
-    </ItemGroup>
-        
-    <ItemGroup>
-        <Resource Include="Resources\Images\Icons\Back.png" />
-        <Resource Include="Resources\Images\Icons\Exit.png" />
-        <Resource Include="Resources\Images\Icons\Forward.png" />
-        <Resource Include="Resources\Images\Icons\New.png" />
-        <Resource Include="Resources\Images\Icons\Open.png" />
-        <Resource Include="Resources\Images\Icons\Save.png" />
-        <Resource Include="Resources\Images\Icons\Settings.png" />
-        <Resource Include="Resources\Images\Icons\Main.ico" />
+        <Resource Include="Resources\Images\Chessmen\*" />
+        <Resource Include="Resources\Images\Icons\*" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Engine\Engine.csproj" />
+        <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
 
 </Project>

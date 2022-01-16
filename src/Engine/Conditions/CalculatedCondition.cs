@@ -137,7 +137,7 @@ internal class CalculatedCondition
                     {
                         piece.UpdatePossibleAttacks(condition, new Coords(row, column));
                         
-                        foreach (Coords possibleAttackCoords in piece.PossibleAttacks)
+                        foreach (var possibleAttackCoords in piece.PossibleAttacks)
                         {
                             calculatedConditionData.EnemyPossibleAttacks.Add(possibleAttackCoords);
                         }
@@ -167,7 +167,7 @@ internal class CalculatedCondition
         }
         
         // Sets pieces whether they protect king from check.
-        foreach (Coords coords in calculatedConditionData.KingProtectingPiecesCoords)
+        foreach (var coords in calculatedConditionData.KingProtectingPiecesCoords)
         {
             (PiecesOnTurn[coords] as Piece)!.ProtectingKing = true;
         }
@@ -246,7 +246,7 @@ internal class CalculatedCondition
                 
                 piece.UpdatePossibleAttacks(condition, new Coords(row, column));
                 
-                foreach (Coords possibleAttackCoords in piece.PossibleAttacks)
+                foreach (var possibleAttackCoords in piece.PossibleAttacks)
                 {
                     calculatedSituationData.EnemyPossibleAttacks.Add(possibleAttackCoords);
                 }

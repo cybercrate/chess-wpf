@@ -77,9 +77,10 @@ internal static class Emulator
     // Loads all possible moves of pieces.
     private static List<HalfTurn> GetPossibleHalfTurns(CalculatedCondition calculatedCondition)
     {
-        var result = (from piece in calculatedCondition.PiecesOnTurn
-            from coords in piece.Value.PossibleMoves
-            select new HalfTurn(piece.Key, coords)).ToList();
+        var result =
+            (from piece in calculatedCondition.PiecesOnTurn
+             from coords in piece.Value.PossibleMoves
+             select new HalfTurn(piece.Key, coords)).ToList();
 
         return result;
     }
@@ -97,11 +98,12 @@ internal static class Emulator
 
         if (depth is 0)
         {
-            foreach (HalfTurn halfTurn in possibleHalfTurns)
+            foreach (var halfTurn in possibleHalfTurns)
             {
                 Evaluate(condition, halfTurn);
                 
-                var possibleAttacks = CalculatedCondition.GetDataOfCalculatedSituation(condition)!
+                var possibleAttacks = CalculatedCondition
+                    .GetDataOfCalculatedSituation(condition)!
                     .EnemyPossibleAttacks.Contains(halfTurn.To);
 
                 if (possibleAttacks)
@@ -119,11 +121,12 @@ internal static class Emulator
             return max;
         }
 
-        foreach (HalfTurn halfTurn in possibleHalfTurns)
+        foreach (var halfTurn in possibleHalfTurns)
         {
             Evaluate(condition, halfTurn);
 
             Condition newCondition = new(condition);
+            
             ChessEngine.MovePiece(halfTurn.From, halfTurn.To, newCondition);
             CalculatedCondition currentCalculatedCondition = new(newCondition);
 
