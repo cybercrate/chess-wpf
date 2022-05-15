@@ -1,5 +1,7 @@
-﻿using Chess.View.UserControls;
+﻿using Chess.ResourceManagement;
+using Chess.View.UserControls;
 using Engine.ResourceManagement;
+using Engine.ResourceManagement.Types;
 using System.Windows.Input;
 
 namespace Chess.View;
@@ -13,10 +15,11 @@ public partial class MainWindow
 
     public MainWindow()
     {
+        ImageLoader.SetResources(ResourcePaths._icons, ResourcePaths._pieceImages);
         InitializeComponent();
         
         Title = "Chess";
-        Icon = IconLoader.GetWindowImage();
+        Icon = ImageLoader.GenerateImage(IconType.Window);
 
         _chessUserControl = new ChessUserControls(LoadNewGameUserControl);
         LoadChessUserControl();

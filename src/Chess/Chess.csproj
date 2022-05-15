@@ -9,7 +9,7 @@
         <UseWPF>true</UseWPF>
         <StartupObject>Chess.App</StartupObject>
         <PlatformTarget>x64</PlatformTarget>
-        <ApplicationIcon>Resources\Images\Icons\Main.ico</ApplicationIcon>
+		<ApplicationIcon>Resources\Images\Icons\App.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,5 +20,4 @@
     <ItemGroup>
         <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
-
 </Project>

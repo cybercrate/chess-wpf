@@ -1,89 +1,52 @@
 ﻿using Engine.Pieces.Types;
+using Engine.ResourceManagement.Types;
 using System.Windows.Media.Imaging;
 
 namespace Engine.ResourceManagement;
 
 public static class ImageLoader
 {
-    private const string RelativePath = $"{ResourcePath.ResourcesRelativePath}/Chessmen";
-    
-    private const string PawnWhite = "PawnWhite.png";
-    private const string PawnBlack = "PawnBlack.png";
-    private const string KnightWhite = "KnightWhite.png";
-    private const string KnightBlack = "KnightBlack.png";
-    private const string BishopWhite = "BishopWhite.png";
-    private const string BishopBlack = "BishopBlack.png";
-    private const string RookWhite = "RookWhite.png";
-    private const string RookBlack = "RookBlack.png";
-    private const string QueenWhite = "QueenWhite.png";
-    private const string QueenBlack = "QueenBlack.png";
-    private const string KingWhite = "KingWhite.png";
-    private const string KingBlack = "KingBlack.png";
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static BitmapImage GetImage(Chessman type) => new(new Uri(GeneratePath(type), UriKind.Relative));
+    private static Dictionary<IconType, string>? _icons = null;
+    private static Dictionary<PieceImageType, string>? _pieceImages = null;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="status"></param>
-    /// <param name="color"></param>
-    /// <returns></returns>
-    public static BitmapImage GetImage(Status status, PieceColor color) =>
-        new(new Uri(GeneratePath(status, color), UriKind.Relative));
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private static string GeneratePath(Chessman type)
+    public static void SetResources(Dictionary<IconType, string> icons, Dictionary<PieceImageType, string> peces)
     {
-        var imageSource = type switch
-        {
-            Chessman.PawnWhite => PawnWhite,
-            Chessman.PawnBlack => PawnBlack,
-            Chessman.KnightWhite => KnightWhite,
-            Chessman.KnightBlack => KnightBlack,
-            Chessman.BishopWhite => BishopWhite,
-            Chessman.BishopBlack => BishopBlack,
-            Chessman.RookWhite => RookWhite,
-            Chessman.RookBlack => RookBlack,
-            Chessman.QueenWhite => QueenWhite,
-            Chessman.QueenBlack => QueenBlack,
-            Chessman.KingWhite => KingWhite,
-            Chessman.KingBlack => KingBlack,
-            _ => throw new Exception()
-        };
-        
-        return $"/{RelativePath}/{imageSource}";
+        _icons = icons;
+        _pieceImages = peces;
+    }
+    
+    private static string GetPath(IconType type)
+    {
+        string? path = null;
+        _icons?.TryGetValue(type, out path);
+
+        return path!;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="status"></param>
-    /// <param name="color"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private static string GeneratePath(Status status, PieceColor color)
+    private static string GetPath(PieceImageType type)
     {
-        var imageSource = status switch
-        {
-            Status.Pawn or Status.EnPassant => color is PieceColor.White ? PawnWhite : PawnBlack,
-            Status.Rook => color is PieceColor.White ? RookWhite : RookBlack,
-            Status.Knight => color is PieceColor.White ? KnightWhite : KnightBlack,
-            Status.Bishop => color is PieceColor.White ? BishopWhite : BishopBlack,
-            Status.Queen => color is PieceColor.White ? QueenWhite : QueenBlack,
-            Status.King => color is PieceColor.White ? KingWhite : KingBlack,
-            _ => throw new Exception()
-        };
+        string? path = null;
+        _pieceImages?.TryGetValue(type, out path);
 
-        return $"/{RelativePath}/{imageSource}";
+        return path!;
     }
+
+    public static BitmapImage GenerateImage(IconType type) => new(new Uri(GetPath(type), UriKind.Relative));
+
+    public static BitmapImage GenerateImage(Status status, PieceColor color) =>
+        new(new Uri($"/{GetPath(GetSourceType(status, color))}", UriKind.Relative));
+
+    public static BitmapImage GenerateImage(PieceImageType piece) =>
+        new(new Uri($"/{GetPath(piece)}", UriKind.Relative));
+
+    private static PieceImageType GetSourceType(Status status, PieceColor color) => status switch
+    {
+        Status.Pawn or Status.EnPassant => color is PieceColor.White ? PieceImageType.PawnWhite : PieceImageType.PawnBlack,
+        Status.Rook => color is PieceColor.White ? PieceImageType.RookWhite : PieceImageType.RookBlack,
+        Status.Knight => color is PieceColor.White ? PieceImageType.KnightWhite : PieceImageType.KnightBlack,
+        Status.Bishop => color is PieceColor.White ? PieceImageType.BishopWhite : PieceImageType.BishopBlack,
+        Status.Queen => color is PieceColor.White ? PieceImageType.QueenWhite : PieceImageType.QueenBlack,
+        Status.King => color is PieceColor.White ? PieceImageType.KingWhite : PieceImageType.KingBlack,
+        _ => throw new Exception()
+    };
 }

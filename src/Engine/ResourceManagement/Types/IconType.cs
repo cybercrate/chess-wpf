@@ -1,4 +1,4 @@
-﻿namespace Engine.ResourceManagement;
+﻿namespace Engine.ResourceManagement.Types;
 
 public enum IconType
 {
@@ -9,5 +9,6 @@ public enum IconType
     New,
     Open,
     Save,
-    Settings
+    Settings,
+    Window
 }

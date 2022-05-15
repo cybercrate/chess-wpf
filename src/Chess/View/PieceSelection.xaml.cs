@@ -1,5 +1,6 @@
 ﻿using Engine.Pieces.Types;
 using Engine.ResourceManagement;
+using Engine.ResourceManagement.Types;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,7 +19,7 @@ public partial class PieceSelection
     {
         InitializeComponent();
 
-        Icon = IconLoader.GetWindowImage();
+        Icon = ImageLoader.GenerateImage(IconType.Window);
         Height = chessboardWidth / 8 * 1.3 + 10;
         Width = chessboardWidth / 2 * 1.3 + 10;
 
@@ -34,19 +35,19 @@ public partial class PieceSelection
             switch(i)
             {
                 case 0:
-                    image.Source = ImageLoader.GetImage(white ? Chessman.RookWhite : Chessman.RookBlack);
+                    image.Source = ImageLoader.GenerateImage(white ? PieceImageType.RookWhite : PieceImageType.RookBlack);
                     RookButton.Content = image;
                     break;
                 case 1:
-                    image.Source = ImageLoader.GetImage(white ? Chessman.KnightWhite : Chessman.KnightBlack);
+                    image.Source = ImageLoader.GenerateImage(white ? PieceImageType.KnightWhite : PieceImageType.KnightBlack);
                     KnightButton.Content = image;
                     break;
                 case 2:
-                    image.Source = ImageLoader.GetImage(white ? Chessman.BishopWhite : Chessman.BishopBlack);
+                    image.Source = ImageLoader.GenerateImage(white ? PieceImageType.BishopWhite : PieceImageType.BishopBlack);
                     BishopButton.Content = image;
                     break;
                 case 3:
-                    image.Source = ImageLoader.GetImage(white ? Chessman.QueenWhite : Chessman.QueenBlack);
+                    image.Source = ImageLoader.GenerateImage(white ? PieceImageType.QueenWhite : PieceImageType.QueenBlack);
                     QueenButton.Content = image;
                     break;
             }

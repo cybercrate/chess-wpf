@@ -1210,7 +1210,7 @@ public class ChessEngine : INotifyPropertyChanged
             image.Height = ImageSizeWrapPanel;
         }
 
-        image.Source = ImageLoader.GetImage(id.Status, id.PieceColor);
+        image.Source = ImageLoader.GenerateImage(id.Status, id.PieceColor);
         return image;
     }
 
